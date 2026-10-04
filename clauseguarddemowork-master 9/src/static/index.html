@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClauseGuard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+  :root {
+    --ink: #101820;
+    --ink-2: #3b4652;
+    --ink-3: #6b7683;
+    --desk: #e8ebee;
+    --sheet: #ffffff;
+    --line: #d5dae0;
+    --mark: #ffd84d;          /* highlighter: the recommended choice */
+    --safe: #137a5a;
+    --safe-bg: #e3f3ed;
+    --alert: #c8321e;
+    --alert-bg: #fbe9e6;
+    --radius: 6px;
+    --font: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--desk); color: var(--ink); font: 400 16px/1.5 var(--font); }
+  h1, h2, h3, h4, p { margin: 0; }
+  button, input, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+  /* top bar */
+  .bar { background: var(--ink); color: #fff; }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+  .brand { font-weight: 800; font-size: 19px; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+  .brand i { display: block; width: 22px; height: 14px; background: var(--mark); border-radius: 2px; }
+  .tabs { display: flex; gap: 4px; }
+  .tab { background: none; border: 0; color: #c4ccd4; padding: 8px 14px; border-radius: var(--radius); cursor: pointer; font-weight: 600; }
+  .tab:hover { color: #fff; }
+  .tab[aria-selected="true"] { background: #fff; color: var(--ink); }
+
+  /* intro */
+  .intro { padding: 44px 0 28px; }
+  .intro h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.04; font-weight: 800; letter-spacing: -.025em; max-width: 16ch; }
+  .intro p { margin-top: 14px; color: var(--ink-2); max-width: 58ch; font-size: 17px; }
+
+  /* form */
+  .versus { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: start; }
+  .versus .vs { align-self: center; font-weight: 800; color: var(--ink-3); padding-top: 4px; }
+  .field { background: var(--sheet); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px 12px; }
+  .field:focus-within { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .field.bad { border-color: var(--alert); box-shadow: 0 0 0 1px var(--alert); }
+  .field label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+  .field input[type=text], .field textarea { width: 100%; border: 0; outline: 0; background: transparent; font-size: 18px; padding: 2px 0; }
+  .field textarea { font-size: 14px; min-height: 110px; resize: vertical; border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 8px; }
+  .field .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; min-height: 22px; gap: 8px; }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 14px; }
+  .linkbtn:hover { color: var(--ink); }
+  .field .err { color: var(--alert); font-size: 14px; font-weight: 500; margin-top: 6px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
+  .btn { background: var(--ink); color: #fff; border: 0; border-radius: var(--radius); padding: 13px 22px; font-weight: 700; font-size: 16px; cursor: pointer; }
+  .btn:hover { background: #26323f; }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 9px 15px; font-size: 14px; }
+  .btn.ghost:hover { background: var(--ink); color: #fff; }
+  .btn.small { padding: 9px 15px; font-size: 14px; }
+  .samples { color: var(--ink-3); font-size: 14px; }
+  .samples button { margin-left: 6px; }
+
+  /* shelf: sites sent from the browser extension */
+  .shelf { margin: 0 0 22px; }
+  .shelf-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .shelf-head h2 { font-size: 20px; letter-spacing: -.01em; }
+  .shelf .sub { color: var(--ink-3); font-size: 15px; margin: 2px 0 12px; }
+  .shelf-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .pick { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: start; background: var(--sheet); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; }
+  .pick:hover { border-color: var(--ink-3); }
+  .pick.on { border: 2px solid var(--ink); padding: 11px 13px; box-shadow: 4px 4px 0 var(--mark); }
+  .pick input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ink); cursor: pointer; }
+  .pick .nm { font-weight: 700; overflow-wrap: anywhere; }
+  .pick .mt { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+  .pick .rt { text-align: right; }
+  .pick .rt b { font-size: 24px; font-weight: 800; letter-spacing: -.02em; display: block; line-height: 1.1; }
+  .pick .rm { background: none; border: 0; color: var(--ink-3); font-size: 12px; text-decoration: underline; cursor: pointer; padding: 0; margin-top: 4px; }
+  .pick .rm:hover { color: var(--alert); }
+  .picked { display: none; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 0 2px; }
+  .picked b { font-size: 18px; }
+  .picked small { color: var(--ink-3); display: block; font-size: 13px; }
+  .field.is-picked input[type=text], .field.is-picked textarea, .field.is-picked .meta .paste { display: none; }
+  .field.is-picked .picked { display: flex; }
+  .field.is-picked .meta { display: none; }
+  .shelf-empty { background: var(--sheet); border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px 16px; color: var(--ink-2); font-size: 15px; }
+
+  .status { display: none; margin-top: 18px; padding: 14px 16px; background: var(--sheet); border-left: 4px solid var(--ink); border-radius: var(--radius); }
+  .status.on { display: flex; gap: 12px; align-items: center; }
+  .status.error { border-left-color: var(--alert); background: var(--alert-bg); }
+  .spin { width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--ink); border-radius: 50%; animation: spin .8s linear infinite; flex: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* any number of sites side by side */
+  .cols { display: grid; grid-template-columns: repeat(var(--c, 2), minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+  .field .rowhead { display: flex; justify-content: space-between; align-items: baseline; }
+  h2.or { font-size: 20px; letter-spacing: -.01em; margin: 6px 0 12px; }
+  .hint { color: var(--ink-3); font-size: 14px; margin-top: 10px; }
+  .score.dense .stats { grid-template-columns: repeat(2, 1fr); }
+  .score.dense .big b { font-size: 46px; }
+  .rank { margin-top: 22px; display: grid; gap: 8px; max-width: 640px; }
+  .rank .r { display: grid; grid-template-columns: 22px minmax(90px, 160px) 1fr 40px; gap: 12px; align-items: center; font-size: 15px; }
+  .rank .r .n { color: #9fb0bf; font-weight: 700; }
+  .rank .r .nm { overflow-wrap: anywhere; font-weight: 600; }
+  .rank .r .track { height: 10px; background: #2b3744; border-radius: 2px; overflow: hidden; }
+  .rank .r .track i { display: block; height: 100%; background: #c4ccd4; }
+  .rank .r.top .track i { background: var(--mark); }
+  .rank .r b { text-align: right; }
+  .redact { overflow-x: auto; }
+  .redact .inner { min-width: calc(150px + var(--n, 2) * 125px); }
+
+  /* results */
+  #results { margin: 34px 0 70px; display: none; }
+  .sheet { background: var(--sheet); border: 1px solid var(--line); border-radius: var(--radius); }
+  .section { margin-top: 26px; }
+  .section > h2 { font-size: 22px; letter-spacing: -.01em; margin-bottom: 4px; }
+  .section > .sub { color: var(--ink-3); font-size: 15px; margin-bottom: 14px; max-width: 70ch; }
+
+  .verdict { background: var(--ink); color: #fff; border-radius: var(--radius); padding: 28px clamp(20px, 4vw, 36px); }
+  .verdict .tag { display: inline-block; background: var(--mark); color: var(--ink); font-weight: 800; padding: 3px 10px; border-radius: 3px; font-size: 14px; }
+  .verdict h2 { font-size: clamp(26px, 4vw, 40px); line-height: 1.1; letter-spacing: -.02em; margin: 14px 0 8px; font-weight: 800; max-width: 22ch; }
+  .verdict .summary { color: #d6dde4; font-size: 17px; max-width: 62ch; }
+  .verdict ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 78ch; }
+  .verdict li { padding-left: 22px; position: relative; color: #eef2f5; }
+  .verdict li::before { content: ""; position: absolute; left: 0; top: .62em; width: 10px; height: 3px; background: var(--mark); }
+
+  .score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .score { padding: 20px 22px 18px; position: relative; }
+  .score.win { border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--mark); }
+  .score .name { font-size: 20px; font-weight: 800; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .score .rec { background: var(--mark); font-size: 13px; padding: 2px 8px; border-radius: 3px; font-weight: 800; }
+  .score .src { color: var(--ink-3); font-size: 13px; overflow-wrap: anywhere; margin-top: 2px; }
+  .score .src a { color: inherit; }
+  .big { display: flex; align-items: baseline; gap: 8px; margin: 14px 0 8px; }
+  .big b { font-size: 56px; line-height: 1; font-weight: 800; letter-spacing: -.03em; }
+  .big span { color: var(--ink-3); }
+  .band { font-weight: 700; padding: 2px 9px; border-radius: 3px; font-size: 14px; }
+  .band.Low { background: var(--safe-bg); color: var(--safe); }
+  .band.Moderate { background: #fff1c2; color: #7a5b00; }
+  .band.High, .band.Very { background: var(--alert-bg); color: var(--alert); }
+  .gauge { height: 12px; background: #eef0f3; border-radius: 2px; overflow: hidden; position: relative; margin-bottom: 16px; }
+  .gauge i { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .stats div { font-size: 13px; color: var(--ink-3); }
+  .stats b { display: block; font-size: 20px; color: var(--ink); font-weight: 700; }
+  .note { color: var(--ink-3); font-size: 13px; margin-top: 10px; }
+
+  /* redaction table */
+  .redact { padding: 6px 20px 14px; }
+  .redact .head, .redact .row { display: grid; grid-template-columns: minmax(130px, 1.1fr) repeat(var(--n, 2), minmax(110px, 1fr)); gap: 18px; align-items: center; }
+  .redact .head { padding: 12px 0 8px; font-weight: 700; border-bottom: 1px solid var(--ink); position: sticky; top: 0; background: var(--sheet); }
+  .redact .grp { font-size: 13px; font-weight: 700; color: var(--ink-3); padding: 16px 0 4px; }
+  .redact .row { padding: 6px 0; border-bottom: 1px solid #eef0f3; }
+  .redact .ename { font-weight: 500; }
+  .cell { display: flex; align-items: center; gap: 8px; min-height: 22px; }
+  .cell .blk { height: 14px; background: var(--ink); border-radius: 1px; }
+  .cell .cnt { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+  .cell .none { height: 0; border-top: 2px dotted var(--line); flex: 1; max-width: 80px; }
+  .cell .none-t { font-size: 13px; color: var(--ink-3); }
+  .cell.heavy .blk { background: var(--alert); }
+
+  /* practices */
+  .pr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .pr { padding: 18px 20px; }
+  .pr h3 { font-size: 17px; margin-bottom: 10px; }
+  .pr ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .pr li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 7px 0; border-bottom: 1px solid #eef0f3; font-size: 15px; }
+  .pr li:last-child { border-bottom: 0; }
+  .mk { width: 18px; height: 18px; border-radius: 3px; display: grid; place-items: center; font-size: 12px; font-weight: 800; margin-top: 2px; }
+  .mk.bad { background: var(--alert); color: #fff; }
+  .mk.good { background: var(--safe); color: #fff; }
+  .mk.off { background: transparent; border: 1.5px solid var(--line); color: transparent; }
+  li.off .lbl { color: var(--ink-3); }
+  details.ev summary { cursor: pointer; color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+  details.ev blockquote { margin: 6px 0 2px; padding: 8px 10px; background: #f4f6f8; border-left: 3px solid var(--ink); font-size: 13px; color: var(--ink-2); overflow-wrap: anywhere; }
+
+  .plain { padding: 18px 22px; }
+  .plain h3 { font-size: 19px; }
+  .plain .tldr { margin: 8px 0 12px; font-size: 16px; color: var(--ink); }
+  .plain .kp { padding: 10px 0; border-top: 1px solid #eef0f3; }
+  .plain .kp h4 { font-size: 14px; margin-bottom: 2px; }
+  .plain .kp p { font-size: 15px; color: var(--ink-2); }
+  .plain .flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip.bad { background: var(--alert-bg); border-color: #efc4bd; color: var(--alert); }
+  .chip.good { background: var(--safe-bg); border-color: #b9dfd0; color: var(--safe); }
+
+  /* clauses */
+  .cl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .cl { padding: 6px 20px 14px; }
+  .cl h3 { font-size: 17px; padding: 14px 0 6px; }
+  .clause { padding: 12px 0; border-top: 1px solid #eef0f3; }
+  .clause q { quotes: none; display: block; font-size: 15px; color: var(--ink); overflow-wrap: anywhere; }
+  .clause .row2 { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+  .chip { font-size: 12px; padding: 2px 8px; border: 1px solid var(--line); border-radius: 99px; background: #f4f6f8; color: var(--ink-2); }
+  .chip.pt { background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 700; }
+  .more { margin: 8px 0 0; }
+
+  /* portfolio impact / how it works */
+  .impact { padding: 18px 20px; }
+  .impact h3 { font-size: 17px; margin-bottom: 6px; }
+  .impact .delta { font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+  .impact p { color: var(--ink-2); font-size: 15px; margin-top: 4px; }
+  .how { padding: 18px 22px; color: var(--ink-2); font-size: 15px; }
+  .how h3 { color: var(--ink); font-size: 16px; margin: 14px 0 4px; }
+  .how h3:first-child { margin-top: 0; }
+  .how p { max-width: 75ch; }
+  details.how-d > summary { cursor: pointer; font-weight: 700; font-size: 17px; padding: 6px 0; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; align-items: center; }
+  .toast { color: var(--safe); font-weight: 600; font-size: 14px; }
+
+  /* portfolio */
+  #view-portfolio { display: none; padding: 40px 0 70px; }
+  .p-top { display: flex; flex-wrap: wrap; gap: 28px; align-items: end; margin-bottom: 24px; }
+  .p-top h1 { font-size: clamp(26px, 4vw, 40px); font-weight: 800; letter-spacing: -.02em; }
+  .p-top .sub { color: var(--ink-2); margin-top: 6px; max-width: 56ch; }
+  .p-score { margin-left: auto; text-align: right; }
+  .p-score b { font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -.03em; display: block; }
+  .p-score span { color: var(--ink-3); font-size: 14px; }
+  .p-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
+  .svc { padding: 14px 18px; border-bottom: 1px solid #eef0f3; }
+  .svc:last-child { border-bottom: 0; }
+  .svc .t { display: flex; justify-content: space-between; font-weight: 700; gap: 10px; }
+  .svc .t-r { display: flex; gap: 14px; align-items: baseline; }
+  .svc .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .svc .bar2 { height: 6px; background: #eef0f3; margin-top: 8px; border-radius: 1px; }
+  .svc .bar2 i { display: block; height: 100%; background: var(--ink); }
+  #network-graph { height: 420px; }
+  .empty { padding: 28px 20px; color: var(--ink-2); }
+  .legend { padding: 10px 18px 14px; color: var(--ink-3); font-size: 13px; display: flex; gap: 16px; }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+  @media (max-width: 820px) {
+    .versus { grid-template-columns: 1fr; }
+    .versus .vs { padding: 0; }
+    .score-grid, .pr-grid, .cl-grid, .p-grid, .cols { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .redact .head, .redact .row { gap: 10px; }
+    .p-score { margin-left: 0; text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } }
+  @media print {
+    .bar, .intro, #form, .toolbar, .status, #view-portfolio { display: none !important; }
+    body { background: #fff; }
+    .score.win { box-shadow: none; }
+    .verdict { background: #fff; color: #000; border: 2px solid #000; }
+    .verdict .summary, .verdict li { color: #000; }
+    #results { margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand"><i></i>ClauseGuard</div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-compare" aria-selected="true" aria-controls="view-compare">Compare websites</button>
+      <button class="tab" role="tab" id="tab-portfolio" aria-selected="false" aria-controls="view-portfolio">My portfolio</button>
+    </div>
+  </div>
+</header>
+
+<main id="view-compare" class="wrap" role="tabpanel">
+  <section class="intro">
+    <h1>Which one reads your data less?</h1>
+    <p>Compare two or more websites or apps. ClauseGuard finds their privacy policies and terms, scores what each one collects and shares, ranks them, and tells you which to use.</p>
+  </section>
+
+  <section class="shelf" id="shelf" aria-label="Sites from the browser extension">
+    <div class="shelf-head">
+      <h2>Ready to compare</h2>
+      <button type="button" class="linkbtn" id="shelf-refresh">Refresh</button>
+    </div>
+    <p class="sub">Sites you summarized with the browser extension. Tick the ones you want to compare (2 to 6), then click Compare.</p>
+    <div id="shelf-list" class="shelf-list"></div>
+  </section>
+
+  <form id="form" autocomplete="off" novalidate>
+    <h2 class="or">Add websites by link</h2>
+    <div class="rows" id="rows"></div>
+    <div class="actions">
+      <button class="btn" id="go" type="submit">Compare</button>
+      <button class="btn ghost small" id="add-row" type="button">Add another website</button>
+      <span class="samples">Not sure what to try?
+        <button type="button" class="linkbtn" id="sample">Fill in an example</button></span>
+    </div>
+    <p class="hint" id="count-hint">Compare 2 to 6 websites. Sites ticked above are included too.</p>
+  </form>
+
+  <div class="status" id="status" role="status" aria-live="polite"><span class="spin"></span><span id="status-text"></span></div>
+
+  <section id="results" aria-live="polite"></section>
+</main>
+
+<main id="view-portfolio" class="wrap" role="tabpanel">
+  <div class="p-top">
+    <div>
+      <h1>My portfolio</h1>
+      <p class="sub">Services you saved. Add a service from a comparison to see how it changes your total exposure.</p>
+    </div>
+    <div class="p-score"><b id="portfolio-risk">0</b><span>total risk score</span></div>
+  </div>
+  <div class="p-grid">
+    <div class="sheet" id="service-list"><div class="empty">Loading…</div></div>
+    <div class="sheet">
+      <div id="network-graph"></div>
+      <div class="legend"><span><i style="background:#101820"></i>Service</span><span><i style="background:#ffd84d"></i>Data type</span></div>
+    </div>
+  </div>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+
+/* Small DOM helper. Policy text is untrusted, so nothing is ever put in via innerHTML. */
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === false || v == null) continue;
+    if (k === "class") el.className = v;
+    else if (k === "text") el.textContent = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+
+let lastResult = null;
+
+/* ---------- tabs ---------- */
+function showTab(name) {
+  const compare = name === "compare";
+  $("view-compare").style.display = compare ? "" : "none";
+  $("view-portfolio").style.display = compare ? "none" : "block";
+  $("tab-compare").setAttribute("aria-selected", compare);
+  $("tab-portfolio").setAttribute("aria-selected", !compare);
+  if (!compare) loadPortfolio();
+}
+$("tab-compare").onclick = () => showTab("compare");
+$("tab-portfolio").onclick = () => showTab("portfolio");
+
+let shelfItems = [];
+let picks = [];            // shelf ids ticked for comparison, in order
+let shelfSeen = new Set(); // ids we already auto-picked or skipped
+
+/* ---------- form: any number of links (2 to 6 sites in total) ---------- */
+const MAX_SITES = 6;
+let rowSeq = 0;
+const rowsBox = $("rows");
+
+function rowEls() { return [...rowsBox.querySelectorAll(".field")]; }
+function filledRows() { return rowEls().filter((r) => rowValue(r).url || rowValue(r).text); }
+function rowValue(r) {
+  const ta = r.querySelector("textarea");
+  return { url: r.querySelector("input").value.trim(), text: ta.hidden ? "" : ta.value.trim() };
+}
+function setRowError(r, msg) {
+  r.querySelector(".err").textContent = msg || "";
+  r.classList.toggle("bad", !!msg);
+}
+function relabelRows() {
+  const rs = rowEls();
+  rs.forEach((r, i) => {
+    r.querySelector("label").textContent = "Link " + (i + 1);
+    r.querySelector(".rm-row").style.display = rs.length > 2 ? "" : "none";
+  });
+  $("add-row").disabled = rs.length >= MAX_SITES;
+  updateGo();
+}
+function updateGo() {
+  const total = picks.length + filledRows().length;
+  $("go").textContent = total >= 2 ? `Compare ${total} websites` : "Compare";
+}
+function addRow(prefill) {
+  const n = ++rowSeq;
+  const input = h("input", { type: "text", id: "url-" + n, placeholder: "spotify.com", inputmode: "url", spellcheck: "false", oninput: updateGo });
+  const ta = h("textarea", { id: "text-" + n, hidden: true, placeholder: "Paste the privacy policy text here", "aria-label": "Policy text", oninput: updateGo });
+  const toggle = h("button", { type: "button", class: "linkbtn", onclick: () => {
+    const on = ta.hidden; ta.hidden = !on;
+    toggle.textContent = on ? "Use a link instead" : "Paste policy text instead";
+    if (on) ta.focus(); updateGo();
+  } }, "Paste policy text instead");
+  const row = h("div", { class: "field" },
+    h("div", { class: "rowhead" }, h("label", { for: "url-" + n }),
+      h("button", { type: "button", class: "linkbtn rm-row", onclick: () => { row.remove(); relabelRows(); } }, "Remove")),
+    input, ta, h("div", { class: "meta" }, toggle), h("div", { class: "err", role: "alert" }));
+  if (prefill) input.value = prefill;
+  rowsBox.append(row);
+  relabelRows();
+  return row;
+}
+addRow(); addRow();
+$("add-row").onclick = () => { if (rowEls().length < MAX_SITES) addRow().querySelector("input").focus(); };
+$("sample").onclick = () => {
+  const ex = ["spotify.com", "apple.com", "netflix.com"];
+  while (rowEls().length < 3) addRow();
+  rowEls().slice(0, 3).forEach((r, i) => { r.querySelector("input").value = ex[i]; });
+  updateGo();
+};
+
+function setStatus(msg, isError) {
+  const el = $("status");
+  el.className = "status" + (msg ? " on" : "") + (isError ? " error" : "");
+  el.querySelector(".spin").style.display = isError ? "none" : "";
+  $("status-text").textContent = msg || "";
+}
+
+$("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  rowEls().forEach((r) => setRowError(r)); setStatus("");
+  // Sites in the order they will be compared: ticked shelf sites first, then links typed above.
+  const sites = [], srcs = [];
+  picks.forEach((id) => { sites.push({ shelf_id: id }); srcs.push({ pick: id }); });
+  filledRows().forEach((r) => { sites.push(rowValue(r)); srcs.push({ row: r }); });
+  if (sites.length < 2) { setStatus("Choose or enter at least two websites to compare.", true); return; }
+  if (sites.length > MAX_SITES) { setStatus(`You can compare up to ${MAX_SITES} websites at a time. Untick or remove some.`, true); return; }
+
+  $("go").disabled = true;
+  $("results").style.display = "none";
+  setStatus(`Finding and reading ${sites.length} privacy policies. This can take a minute or two.`);
+  try {
+    const res = await fetch("/api/compare-websites", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sites }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const src = data.side ? srcs[data.side.charCodeAt(0) - 97] : null;
+      if (src && src.row) { setRowError(src.row, data.error.replace(/^Website [A-F]: /, "")); setStatus(""); }
+      else setStatus(data.error || "Something went wrong.", true);
+      return;
+    }
+    setStatus("");
+    lastResult = data;
+    renderResults(data);
+  } catch (err) {
+    setStatus("Could not reach the ClauseGuard server. Check that it is running, then try again.", true);
+  } finally {
+    $("go").disabled = false;
+  }
+});
+
+/* ---------- shelf (sites sent from the extension) ---------- */
+function timeAgo(iso) {
+  const m = Math.round((Date.now() - new Date(iso)) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return m + " min ago";
+  const hr = Math.round(m / 60);
+  return hr < 24 ? hr + " h ago" : Math.round(hr / 24) + " d ago";
+}
+
+async function loadShelf(first) {
+  try {
+    const res = await fetch("/api/shelf");
+    if (!res.ok) return;
+    shelfItems = (await res.json()).items;
+  } catch (e) { return; }
+  const ids = new Set(shelfItems.map((i) => i.id));
+  picks = picks.filter((id) => ids.has(id));
+  // Newly summarized sites are ticked automatically so one click is enough to compare.
+  const fresh = shelfItems.filter((i) => !shelfSeen.has(i.id));          // newest first
+  fresh.forEach((i) => shelfSeen.add(i.id));
+  if (first && fresh.length) {
+    // On opening the dashboard: everything summarized in the last half hour, or at least the two newest.
+    const recent = fresh.filter((i) => Date.now() - new Date(i.created_at) < 30 * 60000);
+    picks = (recent.length >= 2 ? recent : fresh.slice(0, 2)).slice(0, MAX_SITES).map((i) => i.id).reverse();
+  } else {
+    fresh.slice().reverse().forEach((i) => { if (picks.length < MAX_SITES) picks.push(i.id); });
+  }
+  renderShelf();
+}
+
+function togglePick(id) {
+  if (picks.includes(id)) picks = picks.filter((x) => x !== id);
+  else if (picks.length + filledRows().length >= MAX_SITES) setStatus(`You can compare up to ${MAX_SITES} websites at a time.`, true);
+  else { picks.push(id); setStatus(""); }
+  renderShelf();
+}
+
+function renderShelf() {
+  const box = $("shelf-list");
+  if (!shelfItems.length) {
+    box.replaceChildren(h("div", { class: "shelf-empty", text: "Nothing yet. In the extension, open a website and click Summarize this site. It will appear here." }));
+  } else {
+    box.replaceChildren(...shelfItems.map((i) => {
+      const on = picks.includes(i.id);
+      return h("label", { class: "pick" + (on ? " on" : "") },
+        h("input", { type: "checkbox", checked: on, onchange: () => togglePick(i.id), "aria-label": "Compare " + i.name }),
+        h("div", {}, h("div", { class: "nm", text: i.name }), h("div", { class: "mt", text: timeAgo(i.created_at) }),
+          h("button", { class: "rm", type: "button", onclick: (e) => { e.preventDefault(); removeShelf(i.id); } }, "Remove")),
+        h("div", { class: "rt" }, h("b", { text: Math.round(i.rating) }), h("span", { class: "band " + String(i.band).split(" ")[0], text: i.band })));
+    }));
+  }
+  updateGo();
+}
+
+async function removeShelf(id) {
+  await fetch("/api/shelf/" + id, { method: "DELETE" });
+  picks = picks.filter((x) => x !== id);
+  loadShelf(false);
+}
+
+$("shelf-refresh").onclick = () => loadShelf(false);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) loadShelf(false); });
+window.addEventListener("focus", () => loadShelf(false));
+setInterval(() => { if (!document.hidden) loadShelf(false); }, 5000);
+
+/* Links like /?a=site1.com&b=site2.com or /?u=site1.com&u=site2.com&u=site3.com start a comparison. */
+(function fromQuery() {
+  const q = new URLSearchParams(location.search);
+  const list = [q.get("a"), q.get("b"), ...q.getAll("u")].filter(Boolean).slice(0, MAX_SITES);
+  if (!list.length) return;
+  while (rowEls().length < list.length) addRow();
+  list.forEach((v, i) => { rowEls()[i].querySelector("input").value = v; });
+  updateGo();
+  if (list.length >= 2) setTimeout(() => $("form").requestSubmit(), 50);
+})();
+
+loadShelf(true);
+
+/* ---------- results (any number of sites) ---------- */
+const fmt = (n, d = 0) => Number(n).toFixed(d);
+const cols = (n, ...kids) => h("div", { class: "cols", style: `--c:${n <= 3 ? n : n === 4 ? 2 : 3}` }, kids.flat());
+
+function renderResults(d) {
+  const rs = d.sites || [d.a, d.b];
+  const v = d.verdict;
+  const root = $("results");
+  const tie = v.winner === "tie";
+  const wins = new Set(v.winner_indices || []);
+  root.replaceChildren(
+    renderVerdict(v, rs),
+    renderPlain(rs),
+    h("div", { class: "section" },
+      h("h2", { text: "Scoreboard" }),
+      h("p", { class: "sub", text: "Risk rating runs from 0 (collects little) to 100 (collects and shares a lot). Lower is better." }),
+      cols(rs.length, rs.map((r, i) => scoreCard(r, wins.has(i) ? (tie ? "Tied best" : "Recommended") : "", rs.length >= 3)))),
+    renderRedaction(rs),
+    renderPractices(rs),
+    renderClauses(rs),
+    renderImpact(rs),
+    renderHow(),
+    renderToolbar(rs)
+  );
+  root.style.display = "block";
+  root.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+}
+
+function renderPlain(rs) {
+  const col = (r) => {
+    const sm = r.summary;
+    if (!sm) return h("div");
+    return h("div", { class: "sheet plain" },
+      h("h3", { text: r.service_name }),
+      h("p", { class: "tldr", text: sm.tldr }),
+      sm.key_points.map((k) => h("div", { class: "kp" }, h("h4", { text: k.title }), h("p", { text: k.text }))),
+      sm.red_flags.length ? h("div", { class: "flags" }, sm.red_flags.slice(0, 8).map((f) => h("span", { class: "chip bad", text: f }))) : null,
+      sm.good_signs.length ? h("div", { class: "flags" }, sm.good_signs.map((f) => h("span", { class: "chip good", text: f }))) : null);
+  };
+  return h("div", { class: "section" },
+    h("h2", { text: "The policies in plain words" }),
+    h("p", { class: "sub", text: "A short summary of each site's privacy policy and terms and conditions. Red tags are things to watch. Green tags are protections." }),
+    cols(rs.length, rs.map(col)));
+}
+
+function renderVerdict(v, rs) {
+  const conf = { high: "High confidence", medium: "Medium confidence", low: "Low confidence" }[v.confidence];
+  const rank = (v.ranking || []).map((r, i) => h("div", { class: "r" + ((v.winner_indices || []).includes(r.index) ? " top" : "") },
+    h("span", { class: "n", text: r.rank }), h("span", { class: "nm", text: r.service_name }),
+    h("span", { class: "track", "aria-hidden": "true" }, h("i", { style: `width:${r.rating}%` })),
+    h("b", { text: fmt(r.rating) })));
+  return h("div", { class: "verdict" },
+    h("span", { class: "tag", text: v.winner === "tie" ? "Too close to call" : "Recommended · " + conf }),
+    h("h2", { text: v.headline }),
+    h("p", { class: "summary", text: v.summary }),
+    rs.length >= 3 ? h("div", { class: "rank", role: "list", "aria-label": "Ranking from most to least private" }, rank) : null,
+    v.reasons.length ? h("ul", {}, v.reasons.map((r) => h("li", { text: r }))) : null);
+}
+
+function scoreCard(r, label, dense) {
+  const srcs = (r.sources || []).filter((s) => s.url);
+  return h("div", { class: "sheet score" + (label ? " win" : "") + (dense ? " dense" : "") },
+    h("div", { class: "name" }, h("span", { text: r.service_name }), label ? h("span", { class: "rec", text: label }) : null),
+    h("div", { class: "src" }, srcs.length
+      ? srcs.map((s, i) => [i ? " · " : "", h("a", { href: s.url, target: "_blank", rel: "noopener noreferrer", text: s.title.length > 48 ? s.title.slice(0, 46) + "…" : s.title })])
+      : "Pasted text"),
+    h("div", { class: "big" }, h("b", { text: fmt(r.rating) }), h("span", { text: "/ 100 risk" }),
+      h("span", { class: "band " + r.band.split(" ")[0], text: r.band })),
+    h("div", { class: "gauge", role: "img", "aria-label": `Risk rating ${fmt(r.rating)} out of 100` }, h("i", { style: `width:${r.rating}%` })),
+    h("div", { class: "stats" },
+      stat(r.clause_count, "risky statements"),
+      stat(r.entities.length, "data types"),
+      stat(fmt(r.avg_severity, 1), "avg severity"),
+      stat(fmt(r.raw_score, 0), "ClauseGuard score")),
+    r.note || r.mode ? h("p", { class: "note", text: [r.note, r.mode && r.mode.startsWith("MOCK") ? "Demo mode: scored with built-in rules. Add a Gemini key for AI extraction." : "Extracted with " + r.mode + "."].filter(Boolean).join(" ") }) : null);
+}
+const stat = (v, l) => h("div", {}, h("b", { text: v }), l);
+
+function renderRedaction(rs) {
+  const info = {};
+  rs.forEach((r) => r.entities.forEach((e) => (info[e.name] = info[e.name] || e)));
+  const maps = rs.map((r) => Object.fromEntries(r.entities.map((e) => [e.name, e])));
+  const names = Object.keys(info);
+  const groups = [...new Set(rs.flatMap((r) => r.groups.map((g) => g.group)))];
+  const head = h("div", { class: "head" }, h("span", { text: "Data type" }), rs.map((r) => h("span", { text: r.service_name })));
+  const rows = [head];
+  const addRow = (n) => {
+    const count = maps.filter((m) => m[n]).length;
+    rows.push(h("div", { class: "row" }, h("span", { class: "ename", text: n }),
+      maps.map((m) => cell(m[n], count === 1))));
+  };
+  let any = false;
+  groups.forEach((g) => {
+    const list = names.filter((n) => (info[n].group || "Other") === g).sort((x, y) => info[y].weight - info[x].weight || x.localeCompare(y));
+    if (!list.length) return;
+    any = true;
+    rows.push(h("div", { class: "grp", text: g }));
+    list.forEach(addRow);
+  });
+  const other = names.filter((n) => !groups.includes(info[n].group));
+  if (other.length) { any = true; rows.push(h("div", { class: "grp", text: "Other" })); other.forEach(addRow); }
+  return h("div", { class: "section" },
+    h("h2", { text: "What each one collects" }),
+    h("p", { class: "sub", text: "Bar length shows how sensitive the data is. Red means only this site mentions it. A dotted line means the policy does not mention it." }),
+    h("div", { class: "sheet redact", style: `--n:${rs.length}` }, any ? h("div", { class: "inner" }, rows) : h("p", { class: "empty", text: "No data types were detected." })));
+}
+function cell(e, unique) {
+  if (!e) return h("div", { class: "cell" }, h("span", { class: "none" }), h("span", { class: "none-t", text: "Not mentioned" }));
+  return h("div", { class: "cell" + (unique && e.weight >= 3 ? " heavy" : "") },
+    h("span", { class: "blk", style: `width:${e.weight * 18}px`, title: `Sensitivity ${e.weight} of 5` }),
+    h("span", { class: "cnt", text: e.mentions + (e.mentions === 1 ? " mention" : " mentions") }));
+}
+
+function renderPractices(rs) {
+  const col = (r) => {
+    const mk = (p) => h("li", { class: p.present ? "" : "off" },
+      h("span", { class: "mk " + (p.present ? (p.kind === "risk" ? "bad" : "good") : "off"), text: p.present ? (p.kind === "risk" ? "!" : "✓") : "·", "aria-hidden": "true" }),
+      h("div", {},
+        h("span", { class: "lbl", text: (p.present ? "" : p.kind === "risk" ? "No sign: " : "Not found: ") + p.label.charAt(0).toLowerCase() + p.label.slice(1) }),
+        p.present && p.evidence ? h("details", { class: "ev" }, h("summary", { text: "Show the text" }), h("blockquote", { text: p.evidence })) : null));
+    const risks = r.practices.filter((p) => p.kind === "risk"), prot = r.practices.filter((p) => p.kind === "protect");
+    return h("div", { class: "sheet pr" },
+      h("h3", { text: r.service_name }),
+      h("ul", {}, risks.map(mk)),
+      h("h3", { style: "margin-top:16px", text: "Protections for you" }),
+      h("ul", {}, prot.map(mk)));
+  };
+  return h("div", { class: "section" },
+    h("h2", { text: "How each one treats your data" }),
+    h("p", { class: "sub", text: "Found by reading the full policy text. Each risky practice adds 4 points to the risk rating and each protection removes 4, up to 12 either way." }),
+    cols(rs.length, rs.map(col)));
+}
+
+function renderClauses(rs) {
+  const col = (r) => h("div", { class: "sheet cl" },
+    h("h3", { text: "Riskiest statements in " + r.service_name }),
+    r.top_clauses.map((c) => h("div", { class: "clause" },
+      h("q", { text: c.text.length > 320 ? c.text.slice(0, 318) + "…" : c.text }),
+      h("div", { class: "row2" },
+        h("span", { class: "chip pt", text: "Score " + fmt(c.score, 0) + " of 10" }),
+        c.canonical_entities.map((e) => h("span", { class: "chip", text: e }))))));
+  return h("div", { class: "section" },
+    h("h2", { text: "Statements behind the score" }),
+    h("p", { class: "sub", text: "The highest-scoring sentences from each policy, so you can check the reasoning yourself." }),
+    cols(rs.length, rs.map(col)));
+}
+
+function renderImpact(rs) {
+  if (!rs.some((r) => r.portfolio_impact)) return h("div");
+  const col = (r) => {
+    const p = r.portfolio_impact;
+    if (!p) return h("div", { class: "sheet impact" }, h("h3", { text: r.service_name }), h("p", { text: "Not available." }));
+    return h("div", { class: "sheet impact" },
+      h("h3", { text: "Adding " + r.service_name }),
+      h("div", { class: "delta", text: "+" + fmt(p.marginal_risk_delta, 1) }),
+      h("p", { text: `Your portfolio goes from ${fmt(p.baseline_portfolio_risk, 1)} to ${fmt(p.new_portfolio_risk, 1)}.` }),
+      h("p", { text: p.newly_introduced_entities.length
+        ? "New to your portfolio: " + p.newly_introduced_entities.join(", ") + "."
+        : "It adds no new data types to your portfolio." }),
+      h("p", { text: p.overlapping_entities.length ? "Already shared with others: " + p.overlapping_entities.join(", ") + "." : "" }));
+  };
+  return h("div", { class: "section" },
+    h("h2", { text: "Effect on your portfolio" }),
+    h("p", { class: "sub", text: "How much extra risk each would add on top of the services you saved. Overlapping data counts at half weight." }),
+    cols(rs.length, rs.map(col)));
+}
+
+function renderHow() {
+  return h("div", { class: "section" }, h("details", { class: "how-d sheet how" },
+    h("summary", { text: "How the score works" }),
+    h("h3", { text: "Risk rating (0 to 100)" }),
+    h("p", { text: "Half comes from how severe and specific the average risky statement is. Half comes from how many kinds of data the policy covers, weighted by sensitivity (biometrics, precise location and payment data count most). Practices found in the full text, such as selling data or offering deletion, then move the rating up or down by at most 12 points." }),
+    h("h3", { text: "Recommendation" }),
+    h("p", { text: "Sites are ranked by risk rating, lowest first. The top site is recommended when it leads the next one by 4 points or more. Closer than that is reported as a tie. Confidence is high at a 15 point lead, medium at 8, otherwise low." }),
+    h("h3", { text: "ClauseGuard score" }),
+    h("p", { text: "The project's own formula: severity plus specificity for each statement, added up across the policy. Long policies add up to more, which is why the recommendation uses the 0 to 100 rating instead." }),
+    h("h3", { text: "Limits" }),
+    h("p", { text: "This reads the policy text, not what a company actually does. Weights are a baseline and were not tuned against expert rankings. Sites that need JavaScript or block automated access may need their policy pasted in. This is not legal advice." })));
+}
+
+function renderToolbar(rs) {
+  const msg = h("span", { class: "toast", role: "status" });
+  const save = (r) => h("button", { class: "btn ghost", type: "button", onclick: async (ev) => {
+    ev.target.disabled = true;
+    try {
+      const res = await fetch("/api/save-service", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ service_name: r.service_name, category: "Unknown", clauses: r.clauses }) });
+      if (!res.ok) throw new Error((await res.json()).error || "Save failed");
+      msg.textContent = r.service_name + " saved to your portfolio.";
+    } catch (e) { msg.textContent = ""; setStatus(e.message, true); ev.target.disabled = false; }
+  } }, "Save " + r.service_name + " to portfolio");
+  return h("div", { class: "toolbar" },
+    rs.map(save),
+    h("button", { class: "btn ghost", type: "button", onclick: () => window.print() }, "Print or save as PDF"),
+    h("button", { class: "btn ghost", type: "button", onclick: downloadJson }, "Download data (JSON)"),
+    msg);
+}
+function downloadJson() {
+  const blob = new Blob([JSON.stringify(lastResult, null, 2)], { type: "application/json" });
+  const link = h("a", { href: URL.createObjectURL(blob), download: "clauseguard-comparison.json" });
+  document.body.append(link); link.click(); link.remove();
+}
+
+/* ---------- portfolio ---------- */
+async function loadPortfolio() {
+  try {
+    const res = await fetch("/api/portfolio");
+    if (!res.ok) throw new Error("No portfolio yet. Save a service from a comparison to start one.");
+    const d = await res.json();
+    $("portfolio-risk").textContent = fmt(d.portfolio_score, 0);
+    const max = Math.max(1, ...d.services.map((s) => s.service_score));
+    const list = $("service-list");
+    list.replaceChildren(...(d.services.length ? d.services.map((s) => h("div", { class: "svc" },
+      h("div", { class: "t" }, h("span", { text: s.service_name }),
+        h("span", { class: "t-r" }, fmt(s.service_score, 0),
+          h("button", { class: "linkbtn", type: "button", "aria-label": "Remove " + s.service_name + " from portfolio", onclick: () => removeService(s.service_name) }, "Remove"))),
+      h("div", { class: "bar2" }, h("i", { style: `width:${(s.service_score / max) * 100}%` })),
+      h("div", { class: "chips" }, s.entities.sort().map((e) => h("span", { class: "chip", text: e }))))) :
+      [h("div", { class: "empty", text: "Your portfolio is empty. Compare two websites, then choose Save to portfolio." })]));
+    loadGraph();
+  } catch (e) {
+    $("service-list").replaceChildren(h("div", { class: "empty", text: e.message }));
+  }
+}
+async function removeService(name) {
+  if (!confirm("Remove " + name + " from your portfolio?")) return;
+  const res = await fetch("/api/service/" + encodeURIComponent(name), { method: "DELETE" });
+  if (!res.ok) { alert((await res.json()).error || "Could not remove the service."); return; }
+  loadPortfolio();
+}
+async function loadGraph() {
+  const box = $("network-graph");
+  if (typeof vis === "undefined") { box.replaceChildren(h("div", { class: "empty", text: "The graph could not load. Check your internet connection." })); return; }
+  try {
+    const d = await (await fetch("/api/overlap-graph")).json();
+    const nodes = d.nodes.map((n) => n.group === "service"
+      ? { id: n.id, label: n.id, shape: "box", color: { background: "#101820", border: "#101820" }, font: { color: "#fff", face: "Schibsted Grotesk", size: 15 } }
+      : { id: n.id, label: n.id, shape: "dot", size: 9, color: { background: "#ffd84d", border: "#101820" }, font: { face: "Schibsted Grotesk", size: 12 } });
+    const edges = d.edges.map((e) => ({ from: e.source, to: e.target, color: { color: "#aeb6bf" } }));
+    new vis.Network(box, { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) },
+      { physics: { stabilization: { iterations: 150 }, barnesHut: { springLength: 120 } }, interaction: { hover: true } });
+  } catch (e) { box.replaceChildren(h("div", { class: "empty", text: "Could not draw the graph." })); }
+}
+</script>
+</body>
+</html>

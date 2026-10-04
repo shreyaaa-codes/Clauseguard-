@@ -1,0 +1,20 @@
+{
+  "service_name": "Google",
+  "category": "Search",
+  "clauses": [
+    {
+      "text": "Location info tracked",
+      "entities": ["User Location"],
+      "severity_score": 4.0,
+      "specificity_score": 4.0,
+      "risk_category": "Tracking"
+    },
+    {
+      "text": "Email shared",
+      "entities": ["Email"],
+      "severity_score": 5.0,
+      "specificity_score": 1.0,
+      "risk_category": "Data Sharing"
+    }
+  ]
+}

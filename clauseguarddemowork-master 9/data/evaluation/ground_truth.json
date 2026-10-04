@@ -1,0 +1,92 @@
+{
+  "version": "1.0",
+  "dataset_type": "MANUALLY_ANNOTATED_DEVELOPMENT_EVALUATION",
+  "task": "privacy_clause_classification",
+  "notes": "Dataset created manually to ensure zero overlap/data leakage with the prefilter's training set.",
+  "examples": [
+    {
+      "id": "eval_001",
+      "text": "Our servers automatically record your browsing history.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_002",
+      "text": "Please press the confirmation button to proceed.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_003",
+      "text": "We may distribute your email address to our affiliates.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_004",
+      "text": "The volume settings can be adjusted in the audio menu.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_005",
+      "text": "GPS coordinates are continuously transmitted to our background service.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_006",
+      "text": "Thank you for installing our software suite.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_007",
+      "text": "Device identifiers such as IMEI and MAC address are collected upon installation.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_008",
+      "text": "We retain your personal contact information for up to five years.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_009",
+      "text": "Third-party advertising networks track your behavior across different websites.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_010",
+      "text": "You must be at least 18 years old to create an account.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_011",
+      "text": "Any disputes will be resolved under the laws of the State of California.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_012",
+      "text": "This application may crash on older operating systems.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_013",
+      "text": "We use web beacons to understand how users interact with our promotional emails.",
+      "label": 1,
+      "source": "Manually authored evaluation example"
+    },
+    {
+      "id": "eval_014",
+      "text": "Please restart your computer to apply the updates.",
+      "label": 0,
+      "source": "Manually authored evaluation example"
+    }
+  ]
+}

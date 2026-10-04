@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "dataset_type": "SPECIFICATION_ONLY",
+  "task": "clause_risk_evaluation",
+  "status": "No independent human-rated score ground truth currently exists.",
+  "required_annotation_protocol": {
+    "clause_id": "Unique identifier for the clause",
+    "text": "The raw text of the privacy clause",
+    "human_severity_rating": "Expert rating 1-5 indicating potential harm",
+    "human_specificity_rating": "Expert rating 1-5 indicating vagueness/broadness",
+    "human_risk_category": "Expert assigned primary risk category",
+    "human_clause_risk_score": "Expert assigned overall numeric risk for the clause"
+  },
+  "examples": []
+}

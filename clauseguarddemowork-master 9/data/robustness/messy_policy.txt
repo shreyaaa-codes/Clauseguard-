@@ -1,0 +1,17 @@
+# MESSY PRIVACY POLICY v1.0
+Last Updated: January 1, 2026.
+
+Welcome to the Messy Policy. 
+We collect your location data (including GPS), IP address; and sometimes Email!!!
+
+   What do we do with it?
+   1. Sell it
+   2. Keep it forever
+
+Here is a duplicate clause: We collect your location data (including GPS), IP address; and sometimes Email!!!
+
+We also have a really long paragraph that just goes on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on without any punctuation whatsoever except maybe a comma here and there but mostly just endless text that might confuse a naive text splitter or NLP model if it doesn't handle length limits properly.
+
+Contact us at http://example.com/privacy or email privacy@example.com.
+
+(We might also collect your cookies).

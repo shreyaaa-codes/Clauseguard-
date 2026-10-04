@@ -1,0 +1,40 @@
+{
+  "predictive_evaluation_available": false,
+  "reason": "No independent human-rated risk scores (severity, specificity, or overall risk) exist in the repository.",
+  "weight_optimization_status": "Not Performed. Weight optimization was not performed because independent scoring ground truth was unavailable.",
+  "c4_contract": {
+    "severity_range": "1.0 - 5.0 (per LLM prompt)",
+    "specificity_range": "1.0 - 5.0 (per LLM prompt)",
+    "current_weights": {
+      "w1": 1.0,
+      "w2": 1.0
+    },
+    "clause_formula": "(w1 * severity_score) + (w2 * specificity_score)",
+    "service_aggregation": "SUM(clause_risks)",
+    "portfolio_aggregation": "SUM(service_risks)"
+  },
+  "c5_contract": {
+    "marginal_risk_formula": "Risk(Portfolio + Candidate) - Risk(Portfolio). Due to the additive nature of the baseline C4 formula, this equals Candidate Service Risk.",
+    "overlap_detection": "Set intersection of portfolio canonical entities and candidate canonical entities.",
+    "new_entity_detection": "Set difference of candidate entities minus portfolio canonical entities.",
+    "overlap_discounts_risk": false,
+    "db_mutation_behavior": "Candidate evaluation is performed strictly in-memory and does not mutate the real database."
+  },
+  "mathematical_invariants_tested": [
+    "Single clause calculation",
+    "Multiple clause service aggregation",
+    "Multiple service portfolio aggregation",
+    "Empty portfolio handling",
+    "Weight parameter behavior (w1/w2 changes alter output proportionally)",
+    "Candidate-only marginal risk",
+    "Portfolio + candidate marginal difference",
+    "Overlap detection",
+    "New entity detection",
+    "No database mutation",
+    "Deterministic repeatability"
+  ],
+  "known_limitations": [
+    "Absence of independent score labels prevents predictive evaluation (MAE, RMSE, accuracy).",
+    "Current overlap detection identifies shared entities but does not mathematically discount the marginal risk score (no discounting formula is currently specified in the project plan)."
+  ]
+}

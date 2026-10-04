@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClauseGuard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><i></i>ClauseGuard</div>
+    <div class="top-r">
+      <span id="conn" class="conn" title="Connection to the ClauseGuard backend">Checking…</span>
+      <button id="settings-btn" class="icon" aria-label="Settings" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <section id="settings" class="settings hidden">
+    <label for="server">Backend address</label>
+    <div class="row">
+      <input id="server" type="text" spellcheck="false" placeholder="http://127.0.0.1:5050">
+      <button id="server-save" class="btn small">Save</button>
+    </div>
+    <p class="hint">Start it with <code>python src/dashboard.py</code>. The default port is 5050 because macOS uses 5000 for AirPlay.</p>
+  </section>
+
+  <main>
+    <div class="site"><span id="site-name">Loading…</span><span id="site-kind" class="kind"></span></div>
+
+    <button id="analyze-btn" class="btn">Summarize this site</button>
+    <p class="hint" id="analyze-hint">Reads this page, and its terms and conditions if they are linked.</p>
+
+    <div id="status" class="status hidden" role="status" aria-live="polite"></div>
+
+    <div id="results" class="hidden">
+      <div class="card score">
+        <div class="score-head">
+          <div><b id="rating">0</b><span> / 100 risk</span></div>
+          <span id="band" class="band">Low</span>
+        </div>
+        <div class="gauge"><i id="gauge-fill"></i></div>
+        <p id="tldr" class="tldr"></p>
+        <p id="mode" class="note"></p>
+      </div>
+
+      <div id="dash-note" class="status success hidden" role="status"></div>
+
+      <div id="flags" class="flags"></div>
+
+      <h2>In plain words</h2>
+      <div id="points"></div>
+
+      <details class="more">
+        <summary>Data it collects</summary>
+        <div id="entities" class="chips"></div>
+      </details>
+      <details class="more">
+        <summary>Riskiest statements</summary>
+        <div id="clauses"></div>
+      </details>
+
+      <div class="card compare">
+        <h2>Compare with other sites</h2>
+        <div class="row">
+          <input id="other" type="text" spellcheck="false" placeholder="apple.com, netflix.com">
+          <button id="compare-btn" class="btn small">Compare</button>
+        </div>
+        <p class="hint">Add one site or several, separated by commas.</p>
+        <div id="compare-status" class="status hidden" role="status" aria-live="polite"></div>
+        <div id="verdict" class="verdict hidden"></div>
+      </div>
+
+      <div class="actions">
+        <button id="open-dash" class="btn">Compare on dashboard</button>
+        <button id="save-btn" class="btn ghost">Save to portfolio</button>
+      </div>
+      <div id="save-status" class="status hidden" role="status"></div>
+    </div>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>

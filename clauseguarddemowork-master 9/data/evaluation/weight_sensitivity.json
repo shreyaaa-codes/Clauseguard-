@@ -1,0 +1,67 @@
+{
+  "title": "Weight Sensitivity Analysis \u2014 Illustrative Only",
+  "description": "This analysis demonstrates how the calculated risk score for a single clause shifts under different hypothetical weight configurations. Because independent human-rated score ground truth is currently unavailable, this is not an optimization or a claim that any particular weight is scientifically 'better'.",
+  "hypothetical_clause": {
+    "text": "We continuously collect and share your precise GPS location.",
+    "severity": 4.0,
+    "specificity": 2.0
+  },
+  "results": [
+    {
+      "weights": {
+        "w1": 1.0,
+        "w2": 1.0
+      },
+      "calculated_clause_risk": 6.0,
+      "note": "Risk = (1.0 * 4.0) + (1.0 * 2.0)"
+    },
+    {
+      "weights": {
+        "w1": 2.0,
+        "w2": 1.0
+      },
+      "calculated_clause_risk": 10.0,
+      "note": "Risk = (2.0 * 4.0) + (1.0 * 2.0)"
+    },
+    {
+      "weights": {
+        "w1": 1.0,
+        "w2": 2.0
+      },
+      "calculated_clause_risk": 8.0,
+      "note": "Risk = (1.0 * 4.0) + (2.0 * 2.0)"
+    },
+    {
+      "weights": {
+        "w1": 0.5,
+        "w2": 1.0
+      },
+      "calculated_clause_risk": 4.0,
+      "note": "Risk = (0.5 * 4.0) + (1.0 * 2.0)"
+    },
+    {
+      "weights": {
+        "w1": 1.0,
+        "w2": 0.5
+      },
+      "calculated_clause_risk": 5.0,
+      "note": "Risk = (1.0 * 4.0) + (0.5 * 2.0)"
+    },
+    {
+      "weights": {
+        "w1": 0.0,
+        "w2": 1.0
+      },
+      "calculated_clause_risk": 2.0,
+      "note": "Risk = (0.0 * 4.0) + (1.0 * 2.0)"
+    },
+    {
+      "weights": {
+        "w1": 1.0,
+        "w2": 0.0
+      },
+      "calculated_clause_risk": 4.0,
+      "note": "Risk = (1.0 * 4.0) + (0.0 * 2.0)"
+    }
+  ]
+}

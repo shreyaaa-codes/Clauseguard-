@@ -1,0 +1,24 @@
+{
+  "service_name": "Spotify",
+  "category": "Streaming",
+  "clauses": [
+    {
+      "text": "We share your location data with marketing partners",
+      "entities": [
+        "Location Data"
+      ],
+      "severity_score": 3.0,
+      "specificity_score": 2.0,
+      "risk_category": "Mock Category"
+    },
+    {
+      "text": "Your IP address is logged for security purposes",
+      "entities": [
+        "IP Address"
+      ],
+      "severity_score": 4.0,
+      "specificity_score": 3.0,
+      "risk_category": "Mock Category"
+    }
+  ]
+}

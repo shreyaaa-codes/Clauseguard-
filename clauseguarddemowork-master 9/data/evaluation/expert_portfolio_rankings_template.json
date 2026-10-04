@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "dataset_type": "EXPERT_RANKING_TEMPLATE",
+  "task": "portfolio_weight_tuning",
+  "status": "TEMPLATE - AWAITING HUMAN EXPERT ANNOTATION",
+  "description": "Template for capturing expert-ranked privacy risk. Once populated, this dataset will be used to scientifically tune w1 (severity) and w2 (specificity) parameters and decide between Mean vs Sum aggregation.",
+  "required_annotation_protocol": {
+    "clause_id": "Unique identifier for the clause",
+    "text": "The raw text of the privacy clause",
+    "expert_severity": "Expert rating 1-5 indicating potential harm",
+    "expert_specificity": "Expert rating 1-5 indicating vagueness/broadness",
+    "expert_clause_risk": "Expert overall risk score for the clause"
+  },
+  "examples": [
+    {
+      "clause_id": "example-001",
+      "text": "We share your location data with third parties.",
+      "expert_severity": null,
+      "expert_specificity": null,
+      "expert_clause_risk": null
+    }
+  ]
+}
