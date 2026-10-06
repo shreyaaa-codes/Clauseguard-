@@ -1,0 +1,621 @@
+{
+ "generated": "2026-10-05",
+ "n_services_compared": 9,
+ "n_graded": 7,
+ "skipped": [
+  [
+   "zomato.com",
+   "not found on ToS;DR"
+  ],
+  [
+   "phonepe.com",
+   "not found on ToS;DR"
+  ]
+ ],
+ "services": [
+  {
+   "domain": "spotify.com",
+   "name": "Spotify",
+   "category": "streaming",
+   "cg_rating": 70.5,
+   "cg_band": "Very high",
+   "tosdr_grade": "E",
+   "tosdr_points": 74,
+   "tosdr_risk": [
+    "ad_sharing",
+    "arbitration",
+    "content_license",
+    "long_retention",
+    "profiling",
+    "third_party",
+    "unilateral_changes"
+   ],
+   "tosdr_protect": [
+    "delete_right",
+    "opt_out"
+   ],
+   "cg_practices": [
+    "access_right",
+    "ad_sharing",
+    "cross_border",
+    "delete_right",
+    "law_compliance",
+    "long_retention",
+    "opt_out",
+    "profiling",
+    "security",
+    "third_party"
+   ],
+   "terms_included": false,
+   "tosdr_tracking_points": 2,
+   "tosdr_why": {
+    "third_party": [
+     "Many third parties are involved in operating the service",
+     "Your content can be licensed to third parties",
+     "Your personal data is used to employ targeted third-party advertising"
+    ],
+    "content_license": [
+     "Your content can be licensed to third parties"
+    ],
+    "ad_sharing": [
+     "Your personal data is used to employ targeted third-party advertising"
+    ],
+    "unilateral_changes": [
+     "Instead of asking directly, this Service will assume your consent to changes of terms merely from your usage"
+    ],
+    "arbitration": [
+     "You are forced into binding arbitration in case of disputes",
+     "You waive your right to a class action"
+    ],
+    "delete_right": [
+     "You can request access, correction and/or deletion of your data"
+    ],
+    "profiling": [
+     "Your profile is combined across various products",
+     "Your personal data is used for automated decision-making, profiling or AI training"
+    ],
+    "long_retention": [
+     "Some personal data may be kept for business interests or legal obligations",
+     "Some personal data may be kept for business interests or legal obligations"
+    ],
+    "opt_out": [
+     "You can opt out of targeted advertising"
+    ]
+   },
+   "cg_evidence": {
+    "ad_sharing": "\u2026s also known as interest based advertising. An example of tailored advertising is when an advertising partner provides us with information about topics you may be interested in, such as suggesting you might enjoy cookin\u2026",
+    "third_party": "\u2026eting partners, including device identifiers such as hashed contact information.They also provide us with inferences, which are the partners\u2019 understanding of your interests and preferences. This allows us to deliver more relevant ads and marketing,\u2026",
+    "cross_border": "\u2026r purpose for using your personal data 5. Sharing your personal data 6. Data retention 7. Transfer to other countries 8. Keeping your personal data safe 9. Children 10. Third-Party Links 11. Changes to this Policy 12. How to co\u2026",
+    "long_retention": "\u2026st, or as provided under national laws. 6. Data retention We keep your personal data only as long as necessary to provide you with the Spotify Service and for Spotify's legitimate and essential business purposes, such as\u2026",
+    "profiling": "\u2026fy with your followers choose whether to show your recently played artists on your public profile turn off messaging with other users (if messaging is available in your market) On the 'Explicit Content' sett\u2026",
+    "delete_right": "\u2026te. You can edit your User Data under \u2018Edit profile\u2019 in your account or by contacting us. Erasure Request that we erase certain of your personal data. For example, you can ask us to erase personal data: that we no longer need for the purpose it was collected\u2026",
+    "access_right": "\u2026the Spotify Service by answering your specific questions and requests when you contact us Access Request access to the personal data we process about you. To request a copy of your personal data from Spotify, either: use the \u201cDownload your da\u2026",
+    "opt_out": "\u2026user-friendly hub with summaries of key topics and helpful videos. It includes the 'Your Privacy Controls' video which shows you how to exercise your user rights and make choices about the way we process your data.\u2026",
+    "security": "\u2026e of the EU/EEA are protected by Standard Contractual Clauses ('SCCs') as the appropriate safeguard. These clauses require the third party to protect your data and to provide you with EU-level rights and prote\u2026",
+    "law_compliance": "\u2026privacy laws give rights to individuals over their personal data. These laws include the General Data Protection Regulation, or 'GDPR'. Some rights only apply when Spotify uses a certain 'legal basis' to process your data. We explain\u2026"
+   }
+  },
+  {
+   "domain": "netflix.com",
+   "name": "Netflix",
+   "category": "streaming",
+   "cg_rating": 56.8,
+   "cg_band": "High",
+   "tosdr_grade": "D",
+   "tosdr_points": 53,
+   "tosdr_risk": [
+    "ad_sharing",
+    "long_retention",
+    "third_party"
+   ],
+   "tosdr_protect": [
+    "delete_right",
+    "opt_out"
+   ],
+   "cg_practices": [
+    "access_right",
+    "cross_border",
+    "delete_right",
+    "law_compliance",
+    "no_sale",
+    "opt_out",
+    "security",
+    "third_party"
+   ],
+   "terms_included": false,
+   "tosdr_tracking_points": 8,
+   "tosdr_why": {
+    "ad_sharing": [
+     "Third-party cookies are used for advertising",
+     "Your personal data is used to employ targeted third-party advertising"
+    ],
+    "third_party": [
+     "Third-party cookies are used for advertising",
+     "Information is gathered about you through third parties",
+     "Many third parties are involved in operating the service"
+    ],
+    "delete_right": [
+     "You can request access, correction and/or deletion of your data"
+    ],
+    "opt_out": [
+     "You can opt out of receiving promotional communications",
+     "You can opt out of targeted advertising"
+    ],
+    "long_retention": [
+     "Some personal data may be kept for business interests or legal obligations"
+    ]
+   },
+   "cg_evidence": {
+    "third_party": "\u2026luding to fulfill the purposes described in these Terms. Disclosure of Information We may disclose your information for certain purposes and to third parties, as described below: The Netflix family of companies: We might share your information among the Netflix famil\u2026",
+    "cross_border": "\u2026the public, as required or permitted by law. If, in the course of sharing information, we transfer personal information to countries outside your region, we will take steps to ensure that the information is transferred in accordance with these Terms\u2026",
+    "no_sale": "\u2026ories of CCPA personal information we have disclosed about you for a business purpose. We do not sell personal information. You have a right to receive a copy of the specific CCPA personal information we have collected about you. Yo\u2026",
+    "delete_right": "\u2026se certain interactive features of this Experience or certain of its Experiences. You can delete cookies from your browser; however, that means that any settings or preferences managed by those cookies will also be deleted a\u2026",
+    "access_right": "\u2026with the applicable laws on data protection. Your Information and Rights You can request access to your personal information or correct or update out-of-date or inaccurate personal information we hold about you. You can object to proc\u2026",
+    "opt_out": "\u2026nces. [This Experience may permit you to sign up to receive our email newsletter. You can unsubscribe from such emails at any time by clicking on the \u201cunsubscribe\u201d link in the footer, or by following such other\u2026",
+    "security": "\u2026policies. We use reasonable administrative, logical, physical and managerial measures to safeguard your information against loss, theft and unauthorized access, use and modification. We may retain information\u2026",
+    "law_compliance": "\u2026the name of the Experience if you contact us. To see our California Consumer Privacy Act (CCPA) Privacy Notice, please scroll down. Collection and Use of Information In order to provide you with the Exper\u2026"
+   }
+  },
+  {
+   "domain": "whatsapp.com",
+   "name": "WhatsApp",
+   "category": "messaging",
+   "cg_rating": 79.6,
+   "cg_band": "Very high",
+   "tosdr_grade": "E",
+   "tosdr_points": 74,
+   "tosdr_risk": [
+    "arbitration",
+    "content_license",
+    "long_retention",
+    "third_party",
+    "unilateral_changes"
+   ],
+   "tosdr_protect": [
+    "delete_right",
+    "opt_out"
+   ],
+   "cg_practices": [
+    "access_right",
+    "arbitration",
+    "cross_border",
+    "delete_right",
+    "long_retention",
+    "opt_out",
+    "profiling",
+    "security",
+    "third_party",
+    "unilateral_changes"
+   ],
+   "terms_included": true,
+   "tosdr_tracking_points": 2,
+   "tosdr_why": {
+    "arbitration": [
+     "You are forced into binding arbitration in case of disputes",
+     "You waive your right to a class action"
+    ],
+    "unilateral_changes": [
+     "Instead of asking directly, this Service will assume your consent to changes of terms merely from your usage"
+    ],
+    "third_party": [
+     "This service shares your personal data with third parties that are not essential to its operation",
+     "Information is gathered about you through third parties",
+     "Your content can be licensed to third parties"
+    ],
+    "opt_out": [
+     "You can opt out of targeted advertising"
+    ],
+    "content_license": [
+     "Your content can be licensed to third parties"
+    ],
+    "delete_right": [
+     "You can request access, correction and/or deletion of your data"
+    ],
+    "long_retention": [
+     "Some personal data may be kept for business interests or legal obligations"
+    ]
+   },
+   "cg_evidence": {
+    "third_party": "\u2026business. To understand how a business processes your information, including how it might share your information with third parties or Meta, you should review that business\u2019 privacy policy or contact the business directly. Third-Party Servic\u2026",
+    "cross_border": "\u2026the world, in accordance with this Privacy Policy. Your information may, for example, be transferred or transmitted to, or stored and processed in, the United States; countries or territories where the Meta Companies\u2019 affiliates and partners, or our service providers are loc\u2026",
+    "long_retention": "\u2026elete your information through our Android Help Center articles. We store information for as long as necessary for the purposes identified in this Privacy Policy, including to provide our Services or for other legitimate\u2026",
+    "profiling": "\u2026Information. You must provide your mobile phone number and basic information (including a profile name of your choice) to create a WhatsApp account. If you don\u2019t provide us with this information, you will no\u2026",
+    "arbitration": "\u2026e. IF YOU ARE A WHATSAPP USER LOCATED IN THE UNITED STATES OR CANADA, OUR TERMS CONTAIN A BINDING ARBITRATION PROVISION, WHICH STATES THAT, EXCEPT IF YOU OPT OUT AND EXCEPT FOR CERTAIN TYPES OF DISPUTES, WHATSAPP AND YO\u2026",
+    "unilateral_changes": "\u2026ls. Any amendment to or waiver proposed by you of our Terms requires our express consent. We may amend or update these Terms. We will provide you notice of material amendments to our Terms, as appropriate, and update the \"Effective Da\u2026",
+    "delete_right": "\u2026ble under Settings > Account). For iPhone users, you can learn how to access, manage, and delete your information through our iPhone Help Center articles. For Android users, you can learn how to access, manage, and delete y\u2026",
+    "access_right": "\u2026licable data protection laws. Back to top Managing And Retaining Your Information You can access or port your information using our in-app Request Account Info feature (available under Settings > Account). For iPhone users, you can\u2026",
+    "opt_out": "\u2026NADA, OUR TERMS CONTAIN A BINDING ARBITRATION PROVISION, WHICH STATES THAT, EXCEPT IF YOU OPT OUT AND EXCEPT FOR CERTAIN TYPES OF DISPUTES, WHATSAPP AND YOU AGREE TO RESOLVE ALL DISPUTES (DEFINED BELOW) THRO\u2026",
+    "security": "\u2026cannot be delivered immediately (for example, if the recipient is offline), we keep it in encrypted form on our servers for up to 30 days as we try to deliver it. If a message is still undelivered after 30 day\u2026"
+   }
+  },
+  {
+   "domain": "telegram.org",
+   "name": "Telegram",
+   "category": "messaging",
+   "cg_rating": 65.8,
+   "cg_band": "Very high",
+   "tosdr_grade": "C",
+   "tosdr_points": 3,
+   "tosdr_risk": [],
+   "tosdr_protect": [],
+   "cg_practices": [
+    "access_right",
+    "delete_right",
+    "law_compliance",
+    "profiling",
+    "security",
+    "third_party"
+   ],
+   "terms_included": false,
+   "tosdr_tracking_points": 0,
+   "tosdr_why": {},
+   "cg_evidence": {
+    "third_party": "\u2026onal data that is appropriate to the risk. However, note that if you chat with others and share data with them, they become capable of sharing such data further with third parties without your knowledge or consent, and Telegram has no way to prevent this. 8.2. Telegram\u2019s Group Companies T\u2026",
+    "profiling": "\u2026ication service. You provide your mobile number and basic account data (which may include profile name, profile picture and about information) to create a Telegram account. To make it easier for your contact\u2026",
+    "delete_right": "\u2026of who could benefit most from joining Telegram. You can always stop syncing contacts or delete them from our servers in Settings > Privacy & Security > Data Settings. If you are using Android, Telegram will ask you for permission to access your phone call logs (READ\u2026",
+    "access_right": "\u2026ssages, photos, videos and documents from your cloud chats on our servers so that you can access your data from any of your devices anytime without having to rely on third-party backups. All data is stored heavily en\u2026",
+    "security": "\u2026devices anytime without having to rely on third-party backups. All data is stored heavily encrypted and the encryption keys in each case are stored in several other data centers in different jurisdictions. Thi\u2026",
+    "law_compliance": "\u2026ropean Data Protection Office (EDPO), as our representative pursuant to Article 27 of the GDPR. You can direct to EDPO any of your GDPR-related queries: by using EDPO\u2019s online request form at https://edpo\u2026"
+   }
+  },
+  {
+   "domain": "instagram.com",
+   "name": "Instagram",
+   "category": "social",
+   "cg_rating": 73.1,
+   "cg_band": "Very high",
+   "tosdr_grade": "E",
+   "tosdr_points": 79,
+   "tosdr_risk": [
+    "ad_sharing",
+    "arbitration",
+    "long_retention",
+    "profiling",
+    "third_party",
+    "unilateral_changes"
+   ],
+   "tosdr_protect": [
+    "delete_right"
+   ],
+   "cg_practices": [
+    "access_right",
+    "ad_sharing",
+    "cross_border",
+    "delete_right",
+    "profiling"
+   ],
+   "terms_included": true,
+   "tosdr_tracking_points": 5,
+   "tosdr_why": {
+    "third_party": [
+     "Third-party cookies are used for statistics",
+     "Information is gathered about you through third parties",
+     "Third-party cookies are used for advertising"
+    ],
+    "delete_right": [
+     "You can request access, correction and/or deletion of your data"
+    ],
+    "arbitration": [
+     "You waive your right to a class action",
+     "You are forced into binding arbitration in case of disputes"
+    ],
+    "ad_sharing": [
+     "Third-party cookies are used for advertising",
+     "Your personal data is used to employ targeted third-party advertising"
+    ],
+    "long_retention": [
+     "Logs are kept for an undefined period of time",
+     "Some personal data may be kept for business interests or legal obligations"
+    ],
+    "profiling": [
+     "Your profile is combined across various products"
+    ],
+    "unilateral_changes": [
+     " Terms may be changed any time at their discretion, without notice to you "
+    ]
+   },
+   "cg_evidence": {
+    "ad_sharing": "\u2026ere. Advertisers. We help advertisers understand whether their ads are effective. We also share with companies that help to make reports for advertisers. Companies that offer things through Instagram, like if you buy something and provide your shipping addres\u2026",
+    "cross_border": "\u2026g on your choices. Ensuring access to our Service. To operate our global Service, we must store and transfer data across our systems around the world, including outside of your country of residence. The use of this global infrastructure is necessary and essential to provide our\u2026",
+    "profiling": "\u2026ap above your post and then tap Delete. You can also archive posts to hide them from your profile and make it so your followers and other people on Instagram can't see it. But don\u2019t worry\u2014when you archive a\u2026",
+    "delete_right": "\u2026ur posts, comments, and messages. Learn how to use these tools in our Help Center. How to Delete Your Data Sometimes people change their minds about things they\u2019ve shared online. To delete a photo or video that you'v\u2026",
+    "access_right": "\u2026c information can be seen by anyone. Services (like apps and websites) you choose to give access to your Instagram information, like if you use a service to see all your social media together. You can revoke their access to your informa\u2026"
+   }
+  },
+  {
+   "domain": "swiggy.com",
+   "name": "Swiggy",
+   "category": "food",
+   "cg_rating": 81.4,
+   "cg_band": "Very high",
+   "tosdr_grade": null,
+   "tosdr_points": 0,
+   "tosdr_risk": [],
+   "tosdr_protect": [],
+   "cg_practices": [
+    "ad_sharing",
+    "cross_border",
+    "delete_right",
+    "long_retention",
+    "opt_out",
+    "profiling",
+    "security",
+    "third_party",
+    "unilateral_changes"
+   ],
+   "terms_included": false,
+   "tosdr_tracking_points": 0,
+   "tosdr_why": {},
+   "cg_evidence": {
+    "ad_sharing": "\u2026s: . With Service Providers: We may share your information with our vendors, consultants, marketing partners, Retail Pharmacies, Medical Practitioners, delivery partners, research firms and other service providers, bus\u2026",
+    "third_party": "\u2026links contained on the Platforms. This Policy shall not apply to any information you may disclose to any of our service providers/service personnel which we do not require you to disclose to us or any of our service providers under this Po\u2026",
+    "cross_border": "\u2026he cloud platform of Amazon Web Services provided by Amazon Web Services, Inc., which may store this data on their servers located outside of India. Amazon Web Services has security measures in place to protect the loss, misuse and alteration of th\u2026",
+    "long_retention": "\u2026however, retain and store your personal information in anonymized or aggregated form, for as long as necessary, and use it as permitted under applicable law, including for analytics, improving our products and services,\u2026",
+    "profiling": "\u2026such as your gender, mobile phone number etc. For a few Services we may also collect your profile picture. You may optionally provide us with this information through third-party sign-in services. In such ca\u2026",
+    "unilateral_changes": "\u2026ou do not agree with the Policy, please do not use or access the Platform. POLICY CHANGES We may occasionally update this Policy and the updated Policy will be posted on this page. If we make any significant changes to this Policy we will\u2026",
+    "delete_right": "\u2026h is based on your browsing information across multiple sites and online services. If you delete cookies or change devices, your opt out may no longer be effective. We may share your information other than as described in this Policy if w\u2026",
+    "opt_out": "\u2026sing shall be carried out in accordance with Applicable Laws, and this Policy. You cannot opt out of advertising on the Platforms, you may opt out of much interest-based advertising on third party sites and\u2026",
+    "security": "\u2026sent to the sharing. DATA SECURITY PRECAUTIONS We have in place appropriate technical and security measures to secure the information collected by us. We use vault and tokenization services from third party service pr\u2026"
+   }
+  },
+  {
+   "domain": "paytm.com",
+   "name": "Paytm",
+   "category": "payments",
+   "cg_rating": 66.5,
+   "cg_band": "Very high",
+   "tosdr_grade": null,
+   "tosdr_points": 0,
+   "tosdr_risk": [],
+   "tosdr_protect": [],
+   "cg_practices": [
+    "cross_border",
+    "delete_right",
+    "opt_out",
+    "security",
+    "third_party"
+   ],
+   "terms_included": false,
+   "tosdr_tracking_points": 0,
+   "tosdr_why": {},
+   "cg_evidence": {
+    "third_party": "\u2026if you previously provided Personal Data, cookies may be tied to such data. 7. DOES PAYTM SHARE PERSONAL DATA WITH THIRD PARTIES/ SUBSIDIARIES/AFFILIATES? We only share the data on a \u201cneed-to-know\u201d basis to designated personnel or third-parties, Affiliates or Sub\u2026",
+    "cross_border": "\u2026d/ or on the servers of third parties having contractual relationships with it. We do not transfer any Personal Data to such a country or territory outside India as restricted by the Government. 9. HOW DOES PAYTM KEEP YOUR PERSONAL DATA SAFE? Paytm takes reasonable\u2026",
+    "delete_right": "\u2026e majeure events, breach of firewall etc. 10. HOW LONG DOES PAYTM KEEP YOUR DATA? You can delete your account through Paytm\u2019s desktop website, mobile WAP site, or mobile application. Once deleted, we cease the external\u2026",
+    "opt_out": "\u2026ntil the purpose for its usage exists, after which the same is erased by us, or until you withdraw your consent, or until you exercise the right to erasure of your Personal Data, whichever occurs earlier. However, we may\u2026",
+    "security": "\u2026vernment. 9. HOW DOES PAYTM KEEP YOUR PERSONAL DATA SAFE? Paytm takes reasonable security safeguards to protect your Personal Data from misuse, loss, unauthorised access, modification, or disclosure and uses th\u2026"
+   }
+  },
+  {
+   "domain": "uber.com",
+   "name": "Uber",
+   "category": "mobility",
+   "cg_rating": 77.8,
+   "cg_band": "Very high",
+   "tosdr_grade": "E",
+   "tosdr_points": 30,
+   "tosdr_risk": [
+    "ad_sharing",
+    "arbitration",
+    "profiling",
+    "third_party"
+   ],
+   "tosdr_protect": [
+    "delete_right"
+   ],
+   "cg_practices": [
+    "access_right",
+    "ad_sharing",
+    "arbitration",
+    "cross_border",
+    "delete_right",
+    "law_compliance",
+    "long_retention",
+    "opt_out",
+    "profiling",
+    "security",
+    "third_party",
+    "unilateral_changes"
+   ],
+   "terms_included": true,
+   "tosdr_tracking_points": 3,
+   "tosdr_why": {
+    "profiling": [
+     "Your profile is combined across various products"
+    ],
+    "third_party": [
+     "Third-party cookies are used for statistics",
+     "This service shares your personal data with third parties that are not essential to its operation"
+    ],
+    "ad_sharing": [
+     "Sensitive data is collected and shared to target advertising"
+    ],
+    "arbitration": [
+     "You are forced into binding arbitration in case of disputes",
+     "You waive your right to a class action"
+    ],
+    "delete_right": [
+     "You can request access, correction and/or deletion of your data"
+    ]
+   },
+   "cg_evidence": {
+    "ad_sharing": "\u2026ued ID numbers Information relating to law enforcement, health or other investigations b. Marketing partners and service providers. This includes banks in connection with cash back programs,* and data resellers.* Activ\u2026",
+    "third_party": "\u2026ssary to provide our services or features, at your request, or with your consent. We also share data with our affiliates, subsidiaries, service providers and partners; for legal reasons; or in connection with claims or disputes. Uber may share data: 1. With other users This m\u2026",
+    "cross_border": "\u2026he transfer of data. Uber operates, and processes user data, globally. This may result in processing of your personal data in countries, including the United States, whose data protection laws may differ from those where you live or are located. This includes processing of\u2026",
+    "long_retention": "\u2026a portion of our business by or into another company. F. Data retention and deletion Uber retains your data for as long as necessary for the purposes described above. Users may request account deletion through the Uber apps and webs\u2026",
+    "profiling": "\u2026name Government-issued ID numbers Login name and password Medical examiner's certificate Profile picture Settings (including disability self-ID and accessibility settings) and preferences Tax Uber loyalty p\u2026",
+    "arbitration": "\u2026to resolve that complaint. In certain circumstances, the DPF provides the right to invoke binding arbitration to resolve complaints not resolved by other means, as described in Annex I to the DPF Principles. You can lea\u2026",
+    "unilateral_changes": "\u2026over these Terms in the event of a conflict with respect to the applicable Services. Uber may amend the Terms related to the Services from time to time. Amendments will be effective upon Uber\u2019s posting of such updated T\u2026",
+    "delete_right": "\u2026mail, phone number and banking information. for 7 years from collection (unless you first delete your Uber account) if necessary for purposes of Uber\u2019s tax, insurance, legal or regulatory requirements; subject to Uber\u2019s legi\u2026",
+    "access_right": "\u2026e permissions In-app ratings pages Marketing and advertising choices You may also request access to or copies of your data, make changes or updates to your account, request account deletion, or request that Uber restrict its process\u2026",
+    "opt_out": "\u2026r services and for such other purposes as are disclosed in their privacy notices. You may opt out from ad personalization here. For more information regarding these intermediaries\u2019 privacy practices, includi\u2026",
+    "security": "\u2026to protect users\u2019 data, including: Securing user data when in transit, including through encryption, and at rest. Mandating company-wide training regarding privacy and data security. Implementing internal poli\u2026",
+    "law_compliance": "\u2026US DPF\u201d), as set forth by the US Department of Commerce. Such data remains subject to the GDPR or equivalents after such transfer. Users may contact Uber regarding the above, or to request copies of appli\u2026"
+   }
+  },
+  {
+   "domain": "coursera.org",
+   "name": "Coursera",
+   "category": "education",
+   "cg_rating": 66.5,
+   "cg_band": "Very high",
+   "tosdr_grade": "D",
+   "tosdr_points": 19,
+   "tosdr_risk": [
+    "arbitration",
+    "unilateral_changes"
+   ],
+   "tosdr_protect": [],
+   "cg_practices": [
+    "access_right",
+    "arbitration",
+    "cross_border",
+    "delete_right",
+    "law_compliance",
+    "opt_out",
+    "profiling",
+    "security",
+    "third_party"
+   ],
+   "terms_included": false,
+   "tosdr_tracking_points": 0,
+   "tosdr_why": {
+    "arbitration": [
+     "You waive your right to a class action"
+    ],
+    "unilateral_changes": [
+     "Instead of asking directly, this Service will assume your consent to changes of terms merely from your usage"
+    ]
+   },
+   "cg_evidence": {
+    "third_party": "\u2026rtner sites). For us to provide you with our Products or Services, you may be required to provide Personal Data directly to third parties. Please see the section entitled \u201cPersonal Data third parties collect from you directly\u201d for more information\u2026",
+    "cross_border": "\u2026de or are located, including to the United States. Accordingly, your Personal Data may be transferred outside of the country in which you reside or are located, including to countries that may not provide the same level\u2026",
+    "profiling": "\u2026for customer services and engagement purposes. Your Rights and Safeguards in relation to automated decision-making You have the right not to be subject to a decision based solely on automated processing which produces\u2026",
+    "arbitration": "\u2026f_irm.html. There may also be circumstances when disputes can be resolved through the DPF binding arbitration process. Please see the DPF website for further information. For residents of the UK, the EEA, Switzerland, o\u2026",
+    "delete_right": "\u2026or not you wish to receive material from us or some of our partners, and request that we delete or provide you with a copy of your Personal Data by logging into the Site, selecting \u2018Settings\u2019 from the dropdown in the top right, and scrolling down to find\u2026",
+    "access_right": "\u2026ding the purposes listed in this section of the Privacy Notice. Our Contractors will have access to Personal Data to the extent necessary for provision of their services to Coursera. These Contractors may include vendors an\u2026",
+    "opt_out": "\u2026e replays help us diagnose usability problems and identify areas for improvement. You can opt-out of session recording by adjusting your cookies settings in the \u201cCookies Preference Center\u201d. Personal Data we\u2026",
+    "security": "\u2026internal staff, including for customer services and engagement purposes. Your Rights and Safeguards in relation to automated decision-making You have the right not to be subject to a decision based solely on a\u2026",
+    "law_compliance": "\u2026out in this section each of the legal bases under applicable law (including the EU and UK GDPR) that we rely on, why and how we use your data, and the categories of Personal Data we process Category of Pe\u2026"
+   }
+  }
+ ],
+ "spearman_rho": 0.837,
+ "practice_agreement": {
+  "ad_sharing": {
+   "tp": 3,
+   "fp": 0,
+   "fn": 1,
+   "precision": 1.0,
+   "recall": 0.75,
+   "f1": 0.857
+  },
+  "third_party": {
+   "tp": 4,
+   "fp": 2,
+   "fn": 1,
+   "precision": 0.667,
+   "recall": 0.8,
+   "f1": 0.727
+  },
+  "long_retention": {
+   "tp": 2,
+   "fp": 1,
+   "fn": 2,
+   "precision": 0.667,
+   "recall": 0.5,
+   "f1": 0.571
+  },
+  "profiling": {
+   "tp": 3,
+   "fp": 3,
+   "fn": 0,
+   "precision": 0.5,
+   "recall": 1.0,
+   "f1": 0.667
+  },
+  "arbitration": {
+   "tp": 2,
+   "fp": 0,
+   "fn": 1,
+   "precision": 1.0,
+   "recall": 0.667,
+   "f1": 0.8
+  },
+  "content_license": {
+   "tp": 0,
+   "fp": 0,
+   "fn": 1,
+   "precision": 0.0,
+   "recall": 0.0,
+   "f1": 0.0
+  },
+  "unilateral_changes": {
+   "tp": 1,
+   "fp": 1,
+   "fn": 1,
+   "precision": 0.5,
+   "recall": 0.5,
+   "f1": 0.5
+  },
+  "cross_border": {
+   "tp": 0,
+   "fp": 6,
+   "fn": 0,
+   "precision": 0.0,
+   "recall": 0.0,
+   "f1": 0.0
+  },
+  "delete_right": {
+   "tp": 5,
+   "fp": 2,
+   "fn": 0,
+   "precision": 0.714,
+   "recall": 1.0,
+   "f1": 0.833
+  },
+  "opt_out": {
+   "tp": 3,
+   "fp": 2,
+   "fn": 0,
+   "precision": 0.6,
+   "recall": 1.0,
+   "f1": 0.75
+  },
+  "no_sale": {
+   "tp": 0,
+   "fp": 1,
+   "fn": 0,
+   "precision": 0.0,
+   "recall": 0.0,
+   "f1": 0.0
+  }
+ },
+ "pooled_cohen_kappa": 0.321,
+ "comparable_practices": [
+  "ad_sharing",
+  "third_party",
+  "long_retention",
+  "profiling",
+  "arbitration",
+  "content_license",
+  "unilateral_changes",
+  "delete_right",
+  "opt_out"
+ ],
+ "no_tosdr_counterpart": [
+  "sells_data",
+  "cross_border",
+  "no_sale"
+ ],
+ "pooled_cohen_kappa_comparable": 0.25,
+ "micro_recall": 0.767,
+ "micro_precision_lower_bound": 0.561,
+ "coverage_gap_tracking_points": 20,
+ "terms_only_practices_skipped_without_terms_file": [
+  "arbitration",
+  "content_license",
+  "unilateral_changes"
+ ],
+ "notes": "ToS;DR grades rate fairness of terms and privacy policy combined and are community-curated; absent ToS;DR points do not prove a practice is absent, so precision is a lower bound."
+}
