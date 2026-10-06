@@ -23,3 +23,10 @@ node_modules/
 .DS_Store
 .vscode/
 .idea/
+
+# regenerable / local data
+data/evaluation/tosdr_cache/
+data/db/*.db
+
+# collected policy texts (copyrighted, large; share via Drive instead)
+data/raw/*.txt
