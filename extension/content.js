@@ -21,11 +21,10 @@ function extractPageText() {
     // Basic heuristic to guess if this is a privacy policy
     const titleLower = document.title.toLowerCase();
     const urlLower = window.location.href.toLowerCase();
-    const privacyKeywords = ['privacy policy', 'privacy notice', 'privacy statement', 'data protection', 'data policy', 'privacy',
-                             'terms of service', 'terms of use', 'terms and conditions', 'terms & conditions'];
+    const privacyKeywords = ['privacy policy', 'privacy notice', 'privacy statement', 'data protection', 'data policy', 'privacy'];
     
     let isLikelyPrivacyPolicy = false;
-    if (privacyKeywords.some(kw => titleLower.includes(kw) || urlLower.includes(kw.replace(/ /g, '-')) || urlLower.includes(kw.replace(/ /g, '')))) {
+    if (privacyKeywords.some(kw => titleLower.includes(kw) || urlLower.includes(kw.replace(' ', '-')) || urlLower.includes(kw.replace(' ', '')))) {
         isLikelyPrivacyPolicy = true;
     }
     

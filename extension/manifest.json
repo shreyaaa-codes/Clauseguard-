@@ -1,19 +1,16 @@
 {
   "manifest_version": 3,
   "name": "ClauseGuard Privacy Analyzer",
-  "version": "2.0",
-  "description": "Summarize a website's privacy policy and terms, score the risk, and compare it with another site.",
+  "version": "1.0",
+  "description": "Analyze privacy policies using the ClauseGuard backend.",
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "ClauseGuard"
+    "default_popup": "popup.html"
   },
   "permissions": [
     "activeTab",
-    "scripting",
-    "storage"
+    "scripting"
   ],
   "host_permissions": [
-    "http://127.0.0.1/*",
-    "http://localhost/*"
+    "http://127.0.0.1:5000/*"
   ]
 }

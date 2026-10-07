@@ -15,23 +15,23 @@ try:
         "url": "https://example.com/privacy",
         "title": "MyNewApp Privacy Policy"
     }
-    r = requests.post('http://127.0.0.1:5050/api/analyze-policy', json=analyze_payload)
+    r = requests.post('http://127.0.0.1:5000/api/analyze-policy', json=analyze_payload)
     print("Analyze Status:", r.status_code)
     analysis_result = r.json()
     
     # 2. Save the service
-    r = requests.post('http://127.0.0.1:5050/api/save-service', json=analysis_result)
+    r = requests.post('http://127.0.0.1:5000/api/save-service', json=analysis_result)
     print("Save Status:", r.status_code)
     
     # 3. Check portfolio
-    r = requests.get('http://127.0.0.1:5050/api/portfolio')
+    r = requests.get('http://127.0.0.1:5000/api/portfolio')
     portfolio = r.json()
     names = [s['service_name'] for s in portfolio['services']]
     print("Portfolio Services:", names)
     assert 'MyNewApp Privacy Policy' in names, "Service not found in portfolio"
     
     # 4. Check graph
-    r = requests.get('http://127.0.0.1:5050/api/overlap-graph')
+    r = requests.get('http://127.0.0.1:5000/api/overlap-graph')
     graph = r.json()
     nodes = [n['id'] for n in graph['nodes']]
     assert 'MyNewApp Privacy Policy' in nodes, "Service not found in graph nodes"

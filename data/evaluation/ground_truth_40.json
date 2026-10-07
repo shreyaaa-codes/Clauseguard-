@@ -1,0 +1,342 @@
+{
+  "version": "2.0",
+  "dataset_type": "ANNOTATED_CLASSIFICATION_EVALUATION_40",
+  "task": "privacy_clause_classification",
+  "label_definition": {
+    "1": "Sentence describes collection, use, sharing, retention, tracking, or another concrete handling of personal/user/device data (ANNOTATION_GUIDE.md).",
+    "0": "Sentence does not describe a data practice (ANNOTATION_GUIDE.md)."
+  },
+  "annotation_provenance": "Annotator A = Claude (AI assistant), applying ANNOTATION_GUIDE.md. Labels were fixed BEFORE any prefilter prediction was generated and have not been changed since. This is NOT a human-annotated set and no second annotator exists yet; a human review pass is recommended before citing it as human ground truth.",
+  "notes": "Independent of the 14-example dev set (ground_truth.json) and of the prefilter training fixture; leakage and near-duplicate checks are run by scripts/run_classification_evaluation.py.",
+  "examples": [
+    {
+      "id": "eval40_001",
+      "text": "We collect your name, email address and phone number when you register for an account.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "data_collection_account",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_002",
+      "text": "Children under the age of 16 are not permitted to open an account without parental consent.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "account_age_requirement",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_003",
+      "text": "Our analytics provider receives information about the pages you visit and how long you stay on each one.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "analytics_third_party",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_004",
+      "text": "To install the update, tap the download icon in the top right corner of the screen.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "ui_instruction",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_005",
+      "text": "Cookies stored in your browser allow us to recognise you when you return to the site.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "cookies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_006",
+      "text": "These terms are governed by the laws of England and Wales.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "legal_jurisdiction",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_007",
+      "text": "Precise location data from your phone may be used to show you offers from nearby stores.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "location_data",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_008",
+      "text": "This Privacy Policy was last updated on 14 March 2024.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "policy_meta",
+      "difficulty": "moderate",
+      "annotation_note": "Mentions 'Privacy Policy' but describes no data handling."
+    },
+    {
+      "id": "eval40_009",
+      "text": "Your advertising ID is passed to partners who use it to measure the effectiveness of campaigns.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "device_identifier_advertising",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_010",
+      "text": "Our music service offers over fifty million songs and thousands of curated playlists.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "generic_service_description",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_011",
+      "text": "We keep transaction records, including your billing address, for seven years after your account is closed.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "retention",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_012",
+      "text": "Any dispute arising from these terms shall be settled by binding arbitration under the rules of the American Arbitration Association.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "arbitration_boilerplate",
+      "difficulty": "moderate",
+      "annotation_note": "Legal boilerplate; does not itself describe a data practice."
+    },
+    {
+      "id": "eval40_013",
+      "text": "Based on your viewing history, we build a profile of your interests to personalise recommendations.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "profiling",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_014",
+      "text": "The software is licensed to you, not sold.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "keyword_trap",
+      "difficulty": "moderate",
+      "annotation_note": "Contains 'sold' but concerns software licensing, not data."
+    },
+    {
+      "id": "eval40_015",
+      "text": "Details of your device model, operating system version and language settings are sent to our servers each time the app launches.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "device_data_passive",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_016",
+      "text": "The service is provided \"as is\" without warranties of any kind, express or implied.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "warranty_disclaimer",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_017",
+      "text": "We combine information from your activity on our services with data we obtain from data brokers.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "third_party_data_combination",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_018",
+      "text": "You are responsible for keeping your password confidential and for all activity under your account.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "user_obligation",
+      "difficulty": "moderate",
+      "annotation_note": "Obligation on the user; no handling of data by the service is described."
+    },
+    {
+      "id": "eval40_019",
+      "text": "Photos and files you upload may be scanned automatically to detect prohibited content.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "content_scanning",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_020",
+      "text": "Our company is headquartered in Dublin, Ireland, and has offices in several European countries.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "company_information",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_021",
+      "text": "Our payment processor stores your card details on our behalf.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "third_party_processing",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_022",
+      "text": "We may update this policy from time to time, and the revised version takes effect when it is posted.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "policy_meta",
+      "difficulty": "moderate",
+      "annotation_note": "Policy-change notice; no data handling described."
+    },
+    {
+      "id": "eval40_023",
+      "text": "Information about how you use the app, such as the features you tap and the time spent on each screen, is recorded.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "usage_tracking",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_024",
+      "text": "Premium members can download tracks and listen to them offline.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "service_feature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_025",
+      "text": "Session replay tools capture your mouse movements and keystrokes on our checkout pages.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "session_recording",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_026",
+      "text": "Users may not copy, modify or redistribute any part of the software without written permission.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "licence_restriction",
+      "difficulty": "moderate",
+      "annotation_note": "Contains 'redistribute' but concerns software, not user data."
+    },
+    {
+      "id": "eval40_027",
+      "text": "We may disclose your information to law enforcement agencies when we receive a valid legal request.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "disclosure_legal",
+      "difficulty": "moderate",
+      "annotation_note": "Legal-sounding but describes sharing of user data."
+    },
+    {
+      "id": "eval40_028",
+      "text": "Payment for subscriptions is due at the start of each billing period and is non-refundable.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "commercial_terms",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_029",
+      "text": "If our company is acquired, the personal data we hold about you may be transferred to the new owner.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "transfer_business",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_030",
+      "text": "Customers are advised to back up important files before installing any new version.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "software_instruction",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_031",
+      "text": "Your voice recordings are reviewed by employees and contractors to improve speech recognition.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "voice_data_review",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_032",
+      "text": "Our staff will never ask you for your password over the phone.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "security_advice",
+      "difficulty": "borderline",
+      "annotation_note": "Mentions passwords but describes no collection/use/sharing/retention of data."
+    },
+    {
+      "id": "eval40_033",
+      "text": "Wi-Fi network names and nearby Bluetooth beacons are used to estimate where you are.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "location_data",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_034",
+      "text": "We reserve the right to modify or discontinue any feature of the service without prior notice.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "reserved_rights",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_035",
+      "text": "Contacts you choose to import from your address book are stored on our servers so we can suggest connections.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "data_collection_contacts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_036",
+      "text": "If any provision of these terms is held to be unenforceable, the remaining provisions will stay in effect.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "severability_boilerplate",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_037",
+      "text": "You may ask us to delete the personal data we hold about you at any time.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "deletion_right",
+      "difficulty": "borderline",
+      "annotation_note": "Borderline: a user-rights statement, but it concretely describes handling (deletion) of personal data, so Label 1 under the guide's 'another concrete handling'."
+    },
+    {
+      "id": "eval40_038",
+      "text": "Questions about this policy may be sent to our support team at the address listed below.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "support_contact",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_039",
+      "text": "Advertisers can target you with ads based on the interests we associate with your account.",
+      "label": 1,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "advertising_targeting",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_040",
+      "text": "The application supports dark mode and can be set to start automatically when your computer boots.",
+      "label": 0,
+      "source": "Synthetic privacy-policy-style sentence authored for this evaluation (not copied from a real policy); labelled per data/evaluation/ANNOTATION_GUIDE.md",
+      "category": "ui_feature",
+      "difficulty": "easy"
+    }
+  ]
+}

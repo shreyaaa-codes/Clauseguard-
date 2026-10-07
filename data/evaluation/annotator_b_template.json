@@ -1,0 +1,216 @@
+{
+  "version": "1.0",
+  "dataset_type": "ANNOTATOR_B_TEMPLATE",
+  "task": "privacy_clause_classification",
+  "status": "TEMPLATE - AWAITING SECOND HUMAN ANNOTATOR",
+  "instructions": [
+    "Annotator B must label independently, using ONLY data/evaluation/ANNOTATION_GUIDE.md.",
+    "Do NOT look at data/evaluation/ground_truth_40.json or any prediction output while annotating.",
+    "Replace every null 'label' with 1 (describes a data practice) or 0 (does not).",
+    "Save the completed file as data/evaluation/annotator_b_labels.json (keep the same ids), then re-run scripts/run_classification_evaluation.py.",
+    "Add 'annotator' below (name or initials) so the report can state who rated."
+  ],
+  "annotator": null,
+  "examples": [
+    {
+      "id": "eval40_001",
+      "text": "We collect your name, email address and phone number when you register for an account.",
+      "label": null
+    },
+    {
+      "id": "eval40_002",
+      "text": "Children under the age of 16 are not permitted to open an account without parental consent.",
+      "label": null
+    },
+    {
+      "id": "eval40_003",
+      "text": "Our analytics provider receives information about the pages you visit and how long you stay on each one.",
+      "label": null
+    },
+    {
+      "id": "eval40_004",
+      "text": "To install the update, tap the download icon in the top right corner of the screen.",
+      "label": null
+    },
+    {
+      "id": "eval40_005",
+      "text": "Cookies stored in your browser allow us to recognise you when you return to the site.",
+      "label": null
+    },
+    {
+      "id": "eval40_006",
+      "text": "These terms are governed by the laws of England and Wales.",
+      "label": null
+    },
+    {
+      "id": "eval40_007",
+      "text": "Precise location data from your phone may be used to show you offers from nearby stores.",
+      "label": null
+    },
+    {
+      "id": "eval40_008",
+      "text": "This Privacy Policy was last updated on 14 March 2024.",
+      "label": null
+    },
+    {
+      "id": "eval40_009",
+      "text": "Your advertising ID is passed to partners who use it to measure the effectiveness of campaigns.",
+      "label": null
+    },
+    {
+      "id": "eval40_010",
+      "text": "Our music service offers over fifty million songs and thousands of curated playlists.",
+      "label": null
+    },
+    {
+      "id": "eval40_011",
+      "text": "We keep transaction records, including your billing address, for seven years after your account is closed.",
+      "label": null
+    },
+    {
+      "id": "eval40_012",
+      "text": "Any dispute arising from these terms shall be settled by binding arbitration under the rules of the American Arbitration Association.",
+      "label": null
+    },
+    {
+      "id": "eval40_013",
+      "text": "Based on your viewing history, we build a profile of your interests to personalise recommendations.",
+      "label": null
+    },
+    {
+      "id": "eval40_014",
+      "text": "The software is licensed to you, not sold.",
+      "label": null
+    },
+    {
+      "id": "eval40_015",
+      "text": "Details of your device model, operating system version and language settings are sent to our servers each time the app launches.",
+      "label": null
+    },
+    {
+      "id": "eval40_016",
+      "text": "The service is provided \"as is\" without warranties of any kind, express or implied.",
+      "label": null
+    },
+    {
+      "id": "eval40_017",
+      "text": "We combine information from your activity on our services with data we obtain from data brokers.",
+      "label": null
+    },
+    {
+      "id": "eval40_018",
+      "text": "You are responsible for keeping your password confidential and for all activity under your account.",
+      "label": null
+    },
+    {
+      "id": "eval40_019",
+      "text": "Photos and files you upload may be scanned automatically to detect prohibited content.",
+      "label": null
+    },
+    {
+      "id": "eval40_020",
+      "text": "Our company is headquartered in Dublin, Ireland, and has offices in several European countries.",
+      "label": null
+    },
+    {
+      "id": "eval40_021",
+      "text": "Our payment processor stores your card details on our behalf.",
+      "label": null
+    },
+    {
+      "id": "eval40_022",
+      "text": "We may update this policy from time to time, and the revised version takes effect when it is posted.",
+      "label": null
+    },
+    {
+      "id": "eval40_023",
+      "text": "Information about how you use the app, such as the features you tap and the time spent on each screen, is recorded.",
+      "label": null
+    },
+    {
+      "id": "eval40_024",
+      "text": "Premium members can download tracks and listen to them offline.",
+      "label": null
+    },
+    {
+      "id": "eval40_025",
+      "text": "Session replay tools capture your mouse movements and keystrokes on our checkout pages.",
+      "label": null
+    },
+    {
+      "id": "eval40_026",
+      "text": "Users may not copy, modify or redistribute any part of the software without written permission.",
+      "label": null
+    },
+    {
+      "id": "eval40_027",
+      "text": "We may disclose your information to law enforcement agencies when we receive a valid legal request.",
+      "label": null
+    },
+    {
+      "id": "eval40_028",
+      "text": "Payment for subscriptions is due at the start of each billing period and is non-refundable.",
+      "label": null
+    },
+    {
+      "id": "eval40_029",
+      "text": "If our company is acquired, the personal data we hold about you may be transferred to the new owner.",
+      "label": null
+    },
+    {
+      "id": "eval40_030",
+      "text": "Customers are advised to back up important files before installing any new version.",
+      "label": null
+    },
+    {
+      "id": "eval40_031",
+      "text": "Your voice recordings are reviewed by employees and contractors to improve speech recognition.",
+      "label": null
+    },
+    {
+      "id": "eval40_032",
+      "text": "Our staff will never ask you for your password over the phone.",
+      "label": null
+    },
+    {
+      "id": "eval40_033",
+      "text": "Wi-Fi network names and nearby Bluetooth beacons are used to estimate where you are.",
+      "label": null
+    },
+    {
+      "id": "eval40_034",
+      "text": "We reserve the right to modify or discontinue any feature of the service without prior notice.",
+      "label": null
+    },
+    {
+      "id": "eval40_035",
+      "text": "Contacts you choose to import from your address book are stored on our servers so we can suggest connections.",
+      "label": null
+    },
+    {
+      "id": "eval40_036",
+      "text": "If any provision of these terms is held to be unenforceable, the remaining provisions will stay in effect.",
+      "label": null
+    },
+    {
+      "id": "eval40_037",
+      "text": "You may ask us to delete the personal data we hold about you at any time.",
+      "label": null
+    },
+    {
+      "id": "eval40_038",
+      "text": "Questions about this policy may be sent to our support team at the address listed below.",
+      "label": null
+    },
+    {
+      "id": "eval40_039",
+      "text": "Advertisers can target you with ads based on the interests we associate with your account.",
+      "label": null
+    },
+    {
+      "id": "eval40_040",
+      "text": "The application supports dark mode and can be set to start automatically when your computer boots.",
+      "label": null
+    }
+  ]
+}

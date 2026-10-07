@@ -69,54 +69,11 @@
   .samples { color: var(--ink-3); font-size: 14px; }
   .samples button { margin-left: 6px; }
 
-  /* shelf: sites sent from the browser extension */
-  .shelf { margin: 0 0 22px; }
-  .shelf-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-  .shelf-head h2 { font-size: 20px; letter-spacing: -.01em; }
-  .shelf .sub { color: var(--ink-3); font-size: 15px; margin: 2px 0 12px; }
-  .shelf-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-  .pick { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: start; background: var(--sheet); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; }
-  .pick:hover { border-color: var(--ink-3); }
-  .pick.on { border: 2px solid var(--ink); padding: 11px 13px; box-shadow: 4px 4px 0 var(--mark); }
-  .pick input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ink); cursor: pointer; }
-  .pick .nm { font-weight: 700; overflow-wrap: anywhere; }
-  .pick .mt { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
-  .pick .rt { text-align: right; }
-  .pick .rt b { font-size: 24px; font-weight: 800; letter-spacing: -.02em; display: block; line-height: 1.1; }
-  .pick .rm { background: none; border: 0; color: var(--ink-3); font-size: 12px; text-decoration: underline; cursor: pointer; padding: 0; margin-top: 4px; }
-  .pick .rm:hover { color: var(--alert); }
-  .picked { display: none; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 0 2px; }
-  .picked b { font-size: 18px; }
-  .picked small { color: var(--ink-3); display: block; font-size: 13px; }
-  .field.is-picked input[type=text], .field.is-picked textarea, .field.is-picked .meta .paste { display: none; }
-  .field.is-picked .picked { display: flex; }
-  .field.is-picked .meta { display: none; }
-  .shelf-empty { background: var(--sheet); border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px 16px; color: var(--ink-2); font-size: 15px; }
-
   .status { display: none; margin-top: 18px; padding: 14px 16px; background: var(--sheet); border-left: 4px solid var(--ink); border-radius: var(--radius); }
   .status.on { display: flex; gap: 12px; align-items: center; }
   .status.error { border-left-color: var(--alert); background: var(--alert-bg); }
   .spin { width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--ink); border-radius: 50%; animation: spin .8s linear infinite; flex: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* any number of sites side by side */
-  .cols { display: grid; grid-template-columns: repeat(var(--c, 2), minmax(0, 1fr)); gap: 16px; align-items: start; }
-  .rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 14px; }
-  .field .rowhead { display: flex; justify-content: space-between; align-items: baseline; }
-  h2.or { font-size: 20px; letter-spacing: -.01em; margin: 6px 0 12px; }
-  .hint { color: var(--ink-3); font-size: 14px; margin-top: 10px; }
-  .score.dense .stats { grid-template-columns: repeat(2, 1fr); }
-  .score.dense .big b { font-size: 46px; }
-  .rank { margin-top: 22px; display: grid; gap: 8px; max-width: 640px; }
-  .rank .r { display: grid; grid-template-columns: 22px minmax(90px, 160px) 1fr 40px; gap: 12px; align-items: center; font-size: 15px; }
-  .rank .r .n { color: #9fb0bf; font-weight: 700; }
-  .rank .r .nm { overflow-wrap: anywhere; font-weight: 600; }
-  .rank .r .track { height: 10px; background: #2b3744; border-radius: 2px; overflow: hidden; }
-  .rank .r .track i { display: block; height: 100%; background: #c4ccd4; }
-  .rank .r.top .track i { background: var(--mark); }
-  .rank .r b { text-align: right; }
-  .redact { overflow-x: auto; }
-  .redact .inner { min-width: calc(150px + var(--n, 2) * 125px); }
 
   /* results */
   #results { margin: 34px 0 70px; display: none; }
@@ -156,7 +113,7 @@
 
   /* redaction table */
   .redact { padding: 6px 20px 14px; }
-  .redact .head, .redact .row { display: grid; grid-template-columns: minmax(130px, 1.1fr) repeat(var(--n, 2), minmax(110px, 1fr)); gap: 18px; align-items: center; }
+  .redact .head, .redact .row { display: grid; grid-template-columns: minmax(130px, 1.1fr) 1fr 1fr; gap: 18px; align-items: center; }
   .redact .head { padding: 12px 0 8px; font-weight: 700; border-bottom: 1px solid var(--ink); position: sticky; top: 0; background: var(--sheet); }
   .redact .grp { font-size: 13px; font-weight: 700; color: var(--ink-3); padding: 16px 0 4px; }
   .redact .row { padding: 6px 0; border-bottom: 1px solid #eef0f3; }
@@ -182,16 +139,6 @@
   li.off .lbl { color: var(--ink-3); }
   details.ev summary { cursor: pointer; color: var(--ink-3); font-size: 13px; margin-top: 2px; }
   details.ev blockquote { margin: 6px 0 2px; padding: 8px 10px; background: #f4f6f8; border-left: 3px solid var(--ink); font-size: 13px; color: var(--ink-2); overflow-wrap: anywhere; }
-
-  .plain { padding: 18px 22px; }
-  .plain h3 { font-size: 19px; }
-  .plain .tldr { margin: 8px 0 12px; font-size: 16px; color: var(--ink); }
-  .plain .kp { padding: 10px 0; border-top: 1px solid #eef0f3; }
-  .plain .kp h4 { font-size: 14px; margin-bottom: 2px; }
-  .plain .kp p { font-size: 15px; color: var(--ink-2); }
-  .plain .flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .chip.bad { background: var(--alert-bg); border-color: #efc4bd; color: var(--alert); }
-  .chip.good { background: var(--safe-bg); border-color: #b9dfd0; color: var(--safe); }
 
   /* clauses */
   .cl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -242,9 +189,11 @@
   @media (max-width: 820px) {
     .versus { grid-template-columns: 1fr; }
     .versus .vs { padding: 0; }
-    .score-grid, .pr-grid, .cl-grid, .p-grid, .cols { grid-template-columns: 1fr; }
+    .score-grid, .pr-grid, .cl-grid, .p-grid { grid-template-columns: 1fr; }
     .stats { grid-template-columns: repeat(2, 1fr); }
-    .redact .head, .redact .row { gap: 10px; }
+    .redact .head, .redact .row { grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+    .redact .head > :first-child, .redact .row .ename { grid-column: 1 / -1; }
+    .redact .head > :first-child { display: none; }
     .p-score { margin-left: 0; text-align: left; }
   }
   @media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } }
@@ -273,28 +222,32 @@
 <main id="view-compare" class="wrap" role="tabpanel">
   <section class="intro">
     <h1>Which one reads your data less?</h1>
-    <p>Compare two or more websites or apps. ClauseGuard finds their privacy policies and terms, scores what each one collects and shares, ranks them, and tells you which to use.</p>
-  </section>
-
-  <section class="shelf" id="shelf" aria-label="Sites from the browser extension">
-    <div class="shelf-head">
-      <h2>Ready to compare</h2>
-      <button type="button" class="linkbtn" id="shelf-refresh">Refresh</button>
-    </div>
-    <p class="sub">Sites you summarized with the browser extension. Tick the ones you want to compare (2 to 6), then click Compare.</p>
-    <div id="shelf-list" class="shelf-list"></div>
+    <p>Paste the links to two websites or apps. ClauseGuard finds their privacy policies and terms, scores what each one collects and shares, and tells you which to use.</p>
   </section>
 
   <form id="form" autocomplete="off" novalidate>
-    <h2 class="or">Add websites by link</h2>
-    <div class="rows" id="rows"></div>
+    <div class="versus">
+      <div class="field" id="field-a">
+        <label for="url-a">Website A</label>
+        <input type="text" id="url-a" placeholder="spotify.com" inputmode="url" spellcheck="false">
+        <textarea id="text-a" hidden placeholder="Paste the privacy policy text here" aria-label="Policy text for website A"></textarea>
+        <div class="meta"><button type="button" class="linkbtn" data-toggle="a">Paste policy text instead</button></div>
+        <div class="err" id="err-a" role="alert"></div>
+      </div>
+      <div class="vs" aria-hidden="true">vs</div>
+      <div class="field" id="field-b">
+        <label for="url-b">Website B</label>
+        <input type="text" id="url-b" placeholder="apple.com" inputmode="url" spellcheck="false">
+        <textarea id="text-b" hidden placeholder="Paste the privacy policy text here" aria-label="Policy text for website B"></textarea>
+        <div class="meta"><button type="button" class="linkbtn" data-toggle="b">Paste policy text instead</button></div>
+        <div class="err" id="err-b" role="alert"></div>
+      </div>
+    </div>
     <div class="actions">
-      <button class="btn" id="go" type="submit">Compare</button>
-      <button class="btn ghost small" id="add-row" type="button">Add another website</button>
+      <button class="btn" id="go" type="submit">Compare privacy</button>
       <span class="samples">Not sure what to try?
         <button type="button" class="linkbtn" id="sample">Fill in an example</button></span>
     </div>
-    <p class="hint" id="count-hint">Compare 2 to 6 websites. Sites ticked above are included too.</p>
   </form>
 
   <div class="status" id="status" role="status" aria-live="polite"><span class="spin"></span><span id="status-text"></span></div>
@@ -354,94 +307,53 @@ function showTab(name) {
 $("tab-compare").onclick = () => showTab("compare");
 $("tab-portfolio").onclick = () => showTab("portfolio");
 
-let shelfItems = [];
-let picks = [];            // shelf ids ticked for comparison, in order
-let shelfSeen = new Set(); // ids we already auto-picked or skipped
+/* ---------- form ---------- */
+document.querySelectorAll("[data-toggle]").forEach((btn) => {
+  btn.onclick = () => {
+    const s = btn.dataset.toggle, ta = $("text-" + s), on = ta.hidden;
+    ta.hidden = !on;
+    btn.textContent = on ? "Use a link instead" : "Paste policy text instead";
+    if (on) ta.focus();
+  };
+});
+$("sample").onclick = () => { $("url-a").value = "spotify.com"; $("url-b").value = "apple.com"; };
 
-/* ---------- form: any number of links (2 to 6 sites in total) ---------- */
-const MAX_SITES = 6;
-let rowSeq = 0;
-const rowsBox = $("rows");
-
-function rowEls() { return [...rowsBox.querySelectorAll(".field")]; }
-function filledRows() { return rowEls().filter((r) => rowValue(r).url || rowValue(r).text); }
-function rowValue(r) {
-  const ta = r.querySelector("textarea");
-  return { url: r.querySelector("input").value.trim(), text: ta.hidden ? "" : ta.value.trim() };
+function setSideError(side, msg) {
+  $("err-" + side).textContent = msg || "";
+  $("field-" + side).classList.toggle("bad", !!msg);
 }
-function setRowError(r, msg) {
-  r.querySelector(".err").textContent = msg || "";
-  r.classList.toggle("bad", !!msg);
-}
-function relabelRows() {
-  const rs = rowEls();
-  rs.forEach((r, i) => {
-    r.querySelector("label").textContent = "Link " + (i + 1);
-    r.querySelector(".rm-row").style.display = rs.length > 2 ? "" : "none";
-  });
-  $("add-row").disabled = rs.length >= MAX_SITES;
-  updateGo();
-}
-function updateGo() {
-  const total = picks.length + filledRows().length;
-  $("go").textContent = total >= 2 ? `Compare ${total} websites` : "Compare";
-}
-function addRow(prefill) {
-  const n = ++rowSeq;
-  const input = h("input", { type: "text", id: "url-" + n, placeholder: "spotify.com", inputmode: "url", spellcheck: "false", oninput: updateGo });
-  const ta = h("textarea", { id: "text-" + n, hidden: true, placeholder: "Paste the privacy policy text here", "aria-label": "Policy text", oninput: updateGo });
-  const toggle = h("button", { type: "button", class: "linkbtn", onclick: () => {
-    const on = ta.hidden; ta.hidden = !on;
-    toggle.textContent = on ? "Use a link instead" : "Paste policy text instead";
-    if (on) ta.focus(); updateGo();
-  } }, "Paste policy text instead");
-  const row = h("div", { class: "field" },
-    h("div", { class: "rowhead" }, h("label", { for: "url-" + n }),
-      h("button", { type: "button", class: "linkbtn rm-row", onclick: () => { row.remove(); relabelRows(); } }, "Remove")),
-    input, ta, h("div", { class: "meta" }, toggle), h("div", { class: "err", role: "alert" }));
-  if (prefill) input.value = prefill;
-  rowsBox.append(row);
-  relabelRows();
-  return row;
-}
-addRow(); addRow();
-$("add-row").onclick = () => { if (rowEls().length < MAX_SITES) addRow().querySelector("input").focus(); };
-$("sample").onclick = () => {
-  const ex = ["spotify.com", "apple.com", "netflix.com"];
-  while (rowEls().length < 3) addRow();
-  rowEls().slice(0, 3).forEach((r, i) => { r.querySelector("input").value = ex[i]; });
-  updateGo();
-};
-
 function setStatus(msg, isError) {
   const el = $("status");
   el.className = "status" + (msg ? " on" : "") + (isError ? " error" : "");
   el.querySelector(".spin").style.display = isError ? "none" : "";
   $("status-text").textContent = msg || "";
 }
+function readSide(s) {
+  const url = $("url-" + s).value.trim(), text = $("text-" + s).hidden ? "" : $("text-" + s).value.trim();
+  return { url, text };
+}
 
 $("form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  rowEls().forEach((r) => setRowError(r)); setStatus("");
-  // Sites in the order they will be compared: ticked shelf sites first, then links typed above.
-  const sites = [], srcs = [];
-  picks.forEach((id) => { sites.push({ shelf_id: id }); srcs.push({ pick: id }); });
-  filledRows().forEach((r) => { sites.push(rowValue(r)); srcs.push({ row: r }); });
-  if (sites.length < 2) { setStatus("Choose or enter at least two websites to compare.", true); return; }
-  if (sites.length > MAX_SITES) { setStatus(`You can compare up to ${MAX_SITES} websites at a time. Untick or remove some.`, true); return; }
+  setSideError("a"); setSideError("b"); setStatus("");
+  const a = readSide("a"), b = readSide("b");
+  let bad = false;
+  [["a", a], ["b", b]].forEach(([s, v]) => {
+    if (!v.url && !v.text) { setSideError(s, "Enter a link or paste the policy text."); bad = true; }
+  });
+  if (bad) return;
 
   $("go").disabled = true;
   $("results").style.display = "none";
-  setStatus(`Finding and reading ${sites.length} privacy policies. This can take a minute or two.`);
+  setStatus("Finding and reading both privacy policies. This can take up to a minute.");
   try {
     const res = await fetch("/api/compare-websites", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sites }),
+      body: JSON.stringify({ a, b }),
     });
     const data = await res.json();
     if (!res.ok) {
-      const src = data.side ? srcs[data.side.charCodeAt(0) - 97] : null;
-      if (src && src.row) { setRowError(src.row, data.error.replace(/^Website [A-F]: /, "")); setStatus(""); }
+      if (data.side) setSideError(data.side, data.error.replace(/^Website [AB]: /, ""));
       else setStatus(data.error || "Something went wrong.", true);
       return;
     }
@@ -455,147 +367,43 @@ $("form").addEventListener("submit", async (e) => {
   }
 });
 
-/* ---------- shelf (sites sent from the extension) ---------- */
-function timeAgo(iso) {
-  const m = Math.round((Date.now() - new Date(iso)) / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return m + " min ago";
-  const hr = Math.round(m / 60);
-  return hr < 24 ? hr + " h ago" : Math.round(hr / 24) + " d ago";
-}
-
-async function loadShelf(first) {
-  try {
-    const res = await fetch("/api/shelf");
-    if (!res.ok) return;
-    shelfItems = (await res.json()).items;
-  } catch (e) { return; }
-  const ids = new Set(shelfItems.map((i) => i.id));
-  picks = picks.filter((id) => ids.has(id));
-  // Newly summarized sites are ticked automatically so one click is enough to compare.
-  const fresh = shelfItems.filter((i) => !shelfSeen.has(i.id));          // newest first
-  fresh.forEach((i) => shelfSeen.add(i.id));
-  if (first && fresh.length) {
-    // On opening the dashboard: everything summarized in the last half hour, or at least the two newest.
-    const recent = fresh.filter((i) => Date.now() - new Date(i.created_at) < 30 * 60000);
-    picks = (recent.length >= 2 ? recent : fresh.slice(0, 2)).slice(0, MAX_SITES).map((i) => i.id).reverse();
-  } else {
-    fresh.slice().reverse().forEach((i) => { if (picks.length < MAX_SITES) picks.push(i.id); });
-  }
-  renderShelf();
-}
-
-function togglePick(id) {
-  if (picks.includes(id)) picks = picks.filter((x) => x !== id);
-  else if (picks.length + filledRows().length >= MAX_SITES) setStatus(`You can compare up to ${MAX_SITES} websites at a time.`, true);
-  else { picks.push(id); setStatus(""); }
-  renderShelf();
-}
-
-function renderShelf() {
-  const box = $("shelf-list");
-  if (!shelfItems.length) {
-    box.replaceChildren(h("div", { class: "shelf-empty", text: "Nothing yet. In the extension, open a website and click Summarize this site. It will appear here." }));
-  } else {
-    box.replaceChildren(...shelfItems.map((i) => {
-      const on = picks.includes(i.id);
-      return h("label", { class: "pick" + (on ? " on" : "") },
-        h("input", { type: "checkbox", checked: on, onchange: () => togglePick(i.id), "aria-label": "Compare " + i.name }),
-        h("div", {}, h("div", { class: "nm", text: i.name }), h("div", { class: "mt", text: timeAgo(i.created_at) }),
-          h("button", { class: "rm", type: "button", onclick: (e) => { e.preventDefault(); removeShelf(i.id); } }, "Remove")),
-        h("div", { class: "rt" }, h("b", { text: Math.round(i.rating) }), h("span", { class: "band " + String(i.band).split(" ")[0], text: i.band })));
-    }));
-  }
-  updateGo();
-}
-
-async function removeShelf(id) {
-  await fetch("/api/shelf/" + id, { method: "DELETE" });
-  picks = picks.filter((x) => x !== id);
-  loadShelf(false);
-}
-
-$("shelf-refresh").onclick = () => loadShelf(false);
-document.addEventListener("visibilitychange", () => { if (!document.hidden) loadShelf(false); });
-window.addEventListener("focus", () => loadShelf(false));
-setInterval(() => { if (!document.hidden) loadShelf(false); }, 5000);
-
-/* Links like /?a=site1.com&b=site2.com or /?u=site1.com&u=site2.com&u=site3.com start a comparison. */
-(function fromQuery() {
-  const q = new URLSearchParams(location.search);
-  const list = [q.get("a"), q.get("b"), ...q.getAll("u")].filter(Boolean).slice(0, MAX_SITES);
-  if (!list.length) return;
-  while (rowEls().length < list.length) addRow();
-  list.forEach((v, i) => { rowEls()[i].querySelector("input").value = v; });
-  updateGo();
-  if (list.length >= 2) setTimeout(() => $("form").requestSubmit(), 50);
-})();
-
-loadShelf(true);
-
-/* ---------- results (any number of sites) ---------- */
+/* ---------- results ---------- */
 const fmt = (n, d = 0) => Number(n).toFixed(d);
-const cols = (n, ...kids) => h("div", { class: "cols", style: `--c:${n <= 3 ? n : n === 4 ? 2 : 3}` }, kids.flat());
 
 function renderResults(d) {
-  const rs = d.sites || [d.a, d.b];
-  const v = d.verdict;
+  const { a, b, verdict } = d;
   const root = $("results");
-  const tie = v.winner === "tie";
-  const wins = new Set(v.winner_indices || []);
   root.replaceChildren(
-    renderVerdict(v, rs),
-    renderPlain(rs),
+    renderVerdict(verdict, a, b),
     h("div", { class: "section" },
       h("h2", { text: "Scoreboard" }),
       h("p", { class: "sub", text: "Risk rating runs from 0 (collects little) to 100 (collects and shares a lot). Lower is better." }),
-      cols(rs.length, rs.map((r, i) => scoreCard(r, wins.has(i) ? (tie ? "Tied best" : "Recommended") : "", rs.length >= 3)))),
-    renderRedaction(rs),
-    renderPractices(rs),
-    renderClauses(rs),
-    renderImpact(rs),
-    renderHow(),
-    renderToolbar(rs)
+      h("div", { class: "score-grid" },
+        scoreCard(a, verdict.winner === "a"), scoreCard(b, verdict.winner === "b"))),
+    renderRedaction(a, b),
+    renderPractices(a, b),
+    renderClauses(a, b),
+    renderImpact(a, b),
+    renderHow(a, b),
+    renderToolbar(a, b)
   );
   root.style.display = "block";
   root.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
 }
 
-function renderPlain(rs) {
-  const col = (r) => {
-    const sm = r.summary;
-    if (!sm) return h("div");
-    return h("div", { class: "sheet plain" },
-      h("h3", { text: r.service_name }),
-      h("p", { class: "tldr", text: sm.tldr }),
-      sm.key_points.map((k) => h("div", { class: "kp" }, h("h4", { text: k.title }), h("p", { text: k.text }))),
-      sm.red_flags.length ? h("div", { class: "flags" }, sm.red_flags.slice(0, 8).map((f) => h("span", { class: "chip bad", text: f }))) : null,
-      sm.good_signs.length ? h("div", { class: "flags" }, sm.good_signs.map((f) => h("span", { class: "chip good", text: f }))) : null);
-  };
-  return h("div", { class: "section" },
-    h("h2", { text: "The policies in plain words" }),
-    h("p", { class: "sub", text: "A short summary of each site's privacy policy and terms and conditions. Red tags are things to watch. Green tags are protections." }),
-    cols(rs.length, rs.map(col)));
-}
-
-function renderVerdict(v, rs) {
+function renderVerdict(v, a, b) {
   const conf = { high: "High confidence", medium: "Medium confidence", low: "Low confidence" }[v.confidence];
-  const rank = (v.ranking || []).map((r, i) => h("div", { class: "r" + ((v.winner_indices || []).includes(r.index) ? " top" : "") },
-    h("span", { class: "n", text: r.rank }), h("span", { class: "nm", text: r.service_name }),
-    h("span", { class: "track", "aria-hidden": "true" }, h("i", { style: `width:${r.rating}%` })),
-    h("b", { text: fmt(r.rating) })));
   return h("div", { class: "verdict" },
     h("span", { class: "tag", text: v.winner === "tie" ? "Too close to call" : "Recommended · " + conf }),
     h("h2", { text: v.headline }),
     h("p", { class: "summary", text: v.summary }),
-    rs.length >= 3 ? h("div", { class: "rank", role: "list", "aria-label": "Ranking from most to least private" }, rank) : null,
     v.reasons.length ? h("ul", {}, v.reasons.map((r) => h("li", { text: r }))) : null);
 }
 
-function scoreCard(r, label, dense) {
+function scoreCard(r, win) {
   const srcs = (r.sources || []).filter((s) => s.url);
-  return h("div", { class: "sheet score" + (label ? " win" : "") + (dense ? " dense" : "") },
-    h("div", { class: "name" }, h("span", { text: r.service_name }), label ? h("span", { class: "rec", text: label }) : null),
+  return h("div", { class: "sheet score" + (win ? " win" : "") },
+    h("div", { class: "name" }, h("span", { text: r.service_name }), win ? h("span", { class: "rec", text: "Recommended" }) : null),
     h("div", { class: "src" }, srcs.length
       ? srcs.map((s, i) => [i ? " · " : "", h("a", { href: s.url, target: "_blank", rel: "noopener noreferrer", text: s.title.length > 48 ? s.title.slice(0, 46) + "…" : s.title })])
       : "Pasted text"),
@@ -611,42 +419,41 @@ function scoreCard(r, label, dense) {
 }
 const stat = (v, l) => h("div", {}, h("b", { text: v }), l);
 
-function renderRedaction(rs) {
+function renderRedaction(a, b) {
+  const names = new Set([...a.entities, ...b.entities].map((e) => e.name));
   const info = {};
-  rs.forEach((r) => r.entities.forEach((e) => (info[e.name] = info[e.name] || e)));
-  const maps = rs.map((r) => Object.fromEntries(r.entities.map((e) => [e.name, e])));
-  const names = Object.keys(info);
-  const groups = [...new Set(rs.flatMap((r) => r.groups.map((g) => g.group)))];
-  const head = h("div", { class: "head" }, h("span", { text: "Data type" }), rs.map((r) => h("span", { text: r.service_name })));
-  const rows = [head];
-  const addRow = (n) => {
-    const count = maps.filter((m) => m[n]).length;
-    rows.push(h("div", { class: "row" }, h("span", { class: "ename", text: n }),
-      maps.map((m) => cell(m[n], count === 1))));
-  };
+  [a, b].forEach((r) => r.entities.forEach((e) => (info[e.name] = info[e.name] || e)));
+  const mapA = Object.fromEntries(a.entities.map((e) => [e.name, e]));
+  const mapB = Object.fromEntries(b.entities.map((e) => [e.name, e]));
+  const groups = [...new Set([...a.groups, ...b.groups].map((g) => g.group))];
+  const rows = [h("div", { class: "head" }, h("span", { text: "Data type" }), h("span", { text: a.service_name }), h("span", { text: b.service_name }))];
   let any = false;
   groups.forEach((g) => {
-    const list = names.filter((n) => (info[n].group || "Other") === g).sort((x, y) => info[y].weight - info[x].weight || x.localeCompare(y));
+    const list = [...names].filter((n) => (info[n].group || "Other") === g).sort((x, y) => info[y].weight - info[x].weight || x.localeCompare(y));
     if (!list.length) return;
     any = true;
     rows.push(h("div", { class: "grp", text: g }));
-    list.forEach(addRow);
+    list.forEach((n) => rows.push(h("div", { class: "row" },
+      h("span", { class: "ename", text: n }), cell(mapA[n], mapB[n]), cell(mapB[n], mapA[n]))));
   });
-  const other = names.filter((n) => !groups.includes(info[n].group));
-  if (other.length) { any = true; rows.push(h("div", { class: "grp", text: "Other" })); other.forEach(addRow); }
+  const other = [...names].filter((n) => !groups.includes(info[n].group));
+  if (other.length) {
+    rows.push(h("div", { class: "grp", text: "Other" }));
+    other.forEach((n) => rows.push(h("div", { class: "row" }, h("span", { class: "ename", text: n }), cell(mapA[n]), cell(mapB[n]))));
+  }
   return h("div", { class: "section" },
     h("h2", { text: "What each one collects" }),
-    h("p", { class: "sub", text: "Bar length shows how sensitive the data is. Red means only this site mentions it. A dotted line means the policy does not mention it." }),
-    h("div", { class: "sheet redact", style: `--n:${rs.length}` }, any ? h("div", { class: "inner" }, rows) : h("p", { class: "empty", text: "No data types were detected." })));
+    h("p", { class: "sub", text: "Bar length shows how sensitive the data is. Red means the other site does not mention it. A dotted line means the policy does not mention it." }),
+    h("div", { class: "sheet redact" }, any ? rows : h("p", { class: "empty", text: "No data types were detected." })));
 }
-function cell(e, unique) {
+function cell(e, other) {
   if (!e) return h("div", { class: "cell" }, h("span", { class: "none" }), h("span", { class: "none-t", text: "Not mentioned" }));
-  return h("div", { class: "cell" + (unique && e.weight >= 3 ? " heavy" : "") },
+  return h("div", { class: "cell" + (!other && e.weight >= 3 ? " heavy" : "") },
     h("span", { class: "blk", style: `width:${e.weight * 18}px`, title: `Sensitivity ${e.weight} of 5` }),
     h("span", { class: "cnt", text: e.mentions + (e.mentions === 1 ? " mention" : " mentions") }));
 }
 
-function renderPractices(rs) {
+function renderPractices(a, b) {
   const col = (r) => {
     const mk = (p) => h("li", { class: p.present ? "" : "off" },
       h("span", { class: "mk " + (p.present ? (p.kind === "risk" ? "bad" : "good") : "off"), text: p.present ? (p.kind === "risk" ? "!" : "✓") : "·", "aria-hidden": "true" }),
@@ -663,25 +470,28 @@ function renderPractices(rs) {
   return h("div", { class: "section" },
     h("h2", { text: "How each one treats your data" }),
     h("p", { class: "sub", text: "Found by reading the full policy text. Each risky practice adds 4 points to the risk rating and each protection removes 4, up to 12 either way." }),
-    cols(rs.length, rs.map(col)));
+    h("div", { class: "pr-grid" }, col(a), col(b)));
 }
 
-function renderClauses(rs) {
-  const col = (r) => h("div", { class: "sheet cl" },
-    h("h3", { text: "Riskiest statements in " + r.service_name }),
-    r.top_clauses.map((c) => h("div", { class: "clause" },
-      h("q", { text: c.text.length > 320 ? c.text.slice(0, 318) + "…" : c.text }),
-      h("div", { class: "row2" },
-        h("span", { class: "chip pt", text: "Score " + fmt(c.score, 0) + " of 10" }),
-        c.canonical_entities.map((e) => h("span", { class: "chip", text: e }))))));
+function renderClauses(a, b) {
+  const col = (r) => {
+    const list = r.top_clauses;
+    return h("div", { class: "sheet cl" },
+      h("h3", { text: "Riskiest statements in " + r.service_name }),
+      list.map((c) => h("div", { class: "clause" },
+        h("q", { text: c.text.length > 320 ? c.text.slice(0, 318) + "…" : c.text }),
+        h("div", { class: "row2" },
+          h("span", { class: "chip pt", text: "Score " + fmt(c.score, 0) + " of 10" }),
+          c.canonical_entities.map((e) => h("span", { class: "chip", text: e }))))));
+  };
   return h("div", { class: "section" },
     h("h2", { text: "Statements behind the score" }),
     h("p", { class: "sub", text: "The highest-scoring sentences from each policy, so you can check the reasoning yourself." }),
-    cols(rs.length, rs.map(col)));
+    h("div", { class: "cl-grid" }, col(a), col(b)));
 }
 
-function renderImpact(rs) {
-  if (!rs.some((r) => r.portfolio_impact)) return h("div");
+function renderImpact(a, b) {
+  if (!a.portfolio_impact && !b.portfolio_impact) return h("div");
   const col = (r) => {
     const p = r.portfolio_impact;
     if (!p) return h("div", { class: "sheet impact" }, h("h3", { text: r.service_name }), h("p", { text: "Not available." }));
@@ -697,7 +507,7 @@ function renderImpact(rs) {
   return h("div", { class: "section" },
     h("h2", { text: "Effect on your portfolio" }),
     h("p", { class: "sub", text: "How much extra risk each would add on top of the services you saved. Overlapping data counts at half weight." }),
-    cols(rs.length, rs.map(col)));
+    h("div", { class: "score-grid" }, col(a), col(b)));
 }
 
 function renderHow() {
@@ -705,15 +515,13 @@ function renderHow() {
     h("summary", { text: "How the score works" }),
     h("h3", { text: "Risk rating (0 to 100)" }),
     h("p", { text: "Half comes from how severe and specific the average risky statement is. Half comes from how many kinds of data the policy covers, weighted by sensitivity (biometrics, precise location and payment data count most). Practices found in the full text, such as selling data or offering deletion, then move the rating up or down by at most 12 points." }),
-    h("h3", { text: "Recommendation" }),
-    h("p", { text: "Sites are ranked by risk rating, lowest first. The top site is recommended when it leads the next one by 4 points or more. Closer than that is reported as a tie. Confidence is high at a 15 point lead, medium at 8, otherwise low." }),
     h("h3", { text: "ClauseGuard score" }),
     h("p", { text: "The project's own formula: severity plus specificity for each statement, added up across the policy. Long policies add up to more, which is why the recommendation uses the 0 to 100 rating instead." }),
     h("h3", { text: "Limits" }),
     h("p", { text: "This reads the policy text, not what a company actually does. Weights are a baseline and were not tuned against expert rankings. Sites that need JavaScript or block automated access may need their policy pasted in. This is not legal advice." })));
 }
 
-function renderToolbar(rs) {
+function renderToolbar(a, b) {
   const msg = h("span", { class: "toast", role: "status" });
   const save = (r) => h("button", { class: "btn ghost", type: "button", onclick: async (ev) => {
     ev.target.disabled = true;
@@ -725,7 +533,7 @@ function renderToolbar(rs) {
     } catch (e) { msg.textContent = ""; setStatus(e.message, true); ev.target.disabled = false; }
   } }, "Save " + r.service_name + " to portfolio");
   return h("div", { class: "toolbar" },
-    rs.map(save),
+    save(a), save(b),
     h("button", { class: "btn ghost", type: "button", onclick: () => window.print() }, "Print or save as PDF"),
     h("button", { class: "btn ghost", type: "button", onclick: downloadJson }, "Download data (JSON)"),
     msg);

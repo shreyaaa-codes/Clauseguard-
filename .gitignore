@@ -1,32 +1,42 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-.venv/
-venv/
-clauseenv/
-.pytest_cache/
+*.py[cod]
+*$py.class
 
-# Secrets
+# C extensions
+*.so
+
+# Environments
 .env
-*.env
-*.key
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
+# Project-specific temporary files
+*.tmp
+*.log
+data/db/temp_*.db
+clauseguard_demo_*.db
 # Local databases
-*.db
-*.sqlite
-*.sqlite3
+data/db/*.db
+data/db/*.sqlite
+data/db/*.sqlite3
 
-# Node
-node_modules/
-
-# OS / editor
+# macOS
 .DS_Store
+
+# IDE/editor files
 .vscode/
 .idea/
 
-# regenerable / local data
-data/evaluation/tosdr_cache/
-data/db/*.db
+# Python test/cache files
+.pytest_cache/
+.coverage
+htmlcov/
 
-# collected policy texts (copyrighted, large; share via Drive instead)
-data/raw/*.txt
+# Temporary/generated files
+*.cache
+*.bak

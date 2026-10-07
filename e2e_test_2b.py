@@ -42,7 +42,7 @@ try:
         ],
         "canonical_entities": ["Location", "IP Address"]
     }
-    requests.post('http://127.0.0.1:5050/api/save-service', json=sa_payload)
+    requests.post('http://127.0.0.1:5000/api/save-service', json=sa_payload)
 
     # 2. Save Service B
     sb_payload = {
@@ -68,10 +68,10 @@ try:
         ],
         "canonical_entities": ["IP Address", "Email"]
     }
-    requests.post('http://127.0.0.1:5050/api/save-service', json=sb_payload)
+    requests.post('http://127.0.0.1:5000/api/save-service', json=sb_payload)
 
     # 3. Check portfolio
-    r = requests.get('http://127.0.0.1:5050/api/portfolio')
+    r = requests.get('http://127.0.0.1:5000/api/portfolio')
     names = [s['service_name'] for s in r.json()['services']]
     assert 'Service A' in names
     assert 'Service B' in names
@@ -81,7 +81,7 @@ try:
         "candidate_a": "Service B",
         "candidate_b": "Service A"
     }
-    r = requests.post('http://127.0.0.1:5050/api/compare-services', json=comp_payload)
+    r = requests.post('http://127.0.0.1:5000/api/compare-services', json=comp_payload)
     res = r.json()
     
     ca = res["candidate_a"]

@@ -24,7 +24,7 @@ python run_demo.py
 ```powershell
 python src/dashboard.py
 ```
-Open [http://127.0.0.1:5050](http://127.0.0.1:5050)
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 **Show:**
 * The portfolio risk.

@@ -15,12 +15,12 @@
 | Two-service comparator | PASS | Verified side-by-side marginal candidate calculation |
 | Robustness | PASS | Verified test_robustness.py handles long, messy policy |
 | Chrome extension | PASS | Verified API integration and text-scraping limit |
-| Final regression | PASS | 95/95 test suite execution successful |
+| Final regression | PASS | 87/87 test suite execution successful |
 
 ### Final Verification Checks
-* **Final test count**: 95/95 PASS.
+* **Final test count**: 87/87 PASS.
 * **Database verification**: `data/db/portfolio.db` is confirmed untouched and maintains schema/integrity.
 * **Dashboard verification**: Web UI fetches portfolio and marginal risk dynamically with zero hardcoded JSON.
 * **Extension verification**: Validated endpoint behavior, character truncations, and CORS integration.
-* **Security check**: Extension asks for minimum permissions (`activeTab`, `scripting`, `localhost:5050`). No API keys or `.env` checked into git.
+* **Security check**: Extension asks for minimum permissions (`activeTab`, `scripting`, `localhost:5000`). No API keys or `.env` checked into git.
 * **Known limitations**: No human-rated ground truth for weights; 14-example evaluation sandbox; marginal risk remains strictly additive despite overlap detection.

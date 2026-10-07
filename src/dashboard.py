@@ -257,219 +257,44 @@ def compare_services():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ---------------------------------------------------------------------------
-# Shelf: sites analysed in the browser extension, waiting to be compared on the dashboard
-# ---------------------------------------------------------------------------
-REQUIRED_REPORT_KEYS = ("service_name", "rating", "band", "entities", "practices", "avg_severity", "summary")
-
-
-def _shelf_conn():
-    import sqlite3
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("""CREATE TABLE IF NOT EXISTS shelf (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, url TEXT,
-        created_at TEXT NOT NULL, report TEXT NOT NULL)""")
-    return conn
-
-
-def _load_shelf_report(shelf_id):
-    import json as _json
-    conn = _shelf_conn()
-    try:
-        row = conn.execute("SELECT report FROM shelf WHERE id = ?", (shelf_id,)).fetchone()
-    finally:
-        conn.close()
-    if not row:
-        return None
-    return _json.loads(row[0])
-
-
-def _shelf_add(report):
-    """Put an analysis on the dashboard shelf (one entry per site; adding again replaces it). Returns the shelf id."""
-    import json as _json
-    import datetime
-    payload = _json.dumps(report)
-    if len(payload) > 3_000_000:
-        raise ValueError("Analysis is too large to store.")
-    url = ""
-    for src in report.get("sources") or []:
-        if src.get("url"):
-            url = src["url"]
-            break
-    conn = _shelf_conn()
-    try:
-        conn.execute("DELETE FROM shelf WHERE lower(name) = lower(?)", (report["service_name"],))
-        cur = conn.execute("INSERT INTO shelf (name, url, created_at, report) VALUES (?, ?, ?, ?)",
-                           (report["service_name"], url or report.get("policy_url", ""),
-                            datetime.datetime.now(datetime.timezone.utc).isoformat(), payload))
-        conn.execute("DELETE FROM shelf WHERE id NOT IN (SELECT id FROM shelf ORDER BY id DESC LIMIT 20)")
-        conn.commit()
-        return cur.lastrowid
-    finally:
-        conn.close()
-
-
-@app.route('/api/shelf', methods=['GET', 'POST', 'OPTIONS'])
-def shelf():
-    """GET: list analysed sites. POST: add one (body is a report from /api/summarize, optionally {"report": ...})."""
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
-    import json as _json
-    import datetime
-    if request.method == 'POST':
-        body = request.get_json(silent=True) or {}
-        report = body.get("report", body)
-        if not isinstance(report, dict) or any(k not in report for k in REQUIRED_REPORT_KEYS):
-            return jsonify({"error": "That is not a ClauseGuard analysis. Summarize the site again, then add it."}), 400
-        try:
-            return jsonify({"status": "success", "id": _shelf_add(report)}), 201
-        except ValueError as e:
-            return jsonify({"error": str(e)}), 413
-    conn = _shelf_conn()
-    try:
-        rows = conn.execute("SELECT id, name, url, created_at, report FROM shelf ORDER BY id DESC").fetchall()
-    finally:
-        conn.close()
-    items = []
-    for sid, name, url, created, rep in rows:
-        r = _json.loads(rep)
-        items.append({"id": sid, "name": name, "url": url, "created_at": created, "rating": r.get("rating"),
-                      "band": r.get("band"), "tldr": (r.get("summary") or {}).get("tldr", ""),
-                      "clause_count": r.get("clause_count"), "mode": r.get("mode")})
-    return jsonify({"items": items})
-
-
-@app.route('/api/shelf/<int:shelf_id>', methods=['DELETE', 'OPTIONS'])
-def shelf_delete(shelf_id):
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
-    conn = _shelf_conn()
-    try:
-        cur = conn.execute("DELETE FROM shelf WHERE id = ?", (shelf_id,))
-        conn.commit()
-        if cur.rowcount == 0:
-            return jsonify({"error": "That analysis was already removed."}), 404
-        return jsonify({"status": "success"})
-    finally:
-        conn.close()
-
-
-@app.route('/api/health', methods=['GET'])
-def health():
-    return jsonify({"app": "ClauseGuard", "status": "ok", "version": 2})
-
-
-@app.route('/api/summarize', methods=['POST', 'OPTIONS'])
-def summarize_site():
-    """
-    Used by the browser extension.
-    Body: {"url": "...", "text": "(page text, optional)", "title": "(optional)", "include_terms": true}
-    Returns a full report (rating, plain-language summary, practices, data types) for one site.
-    """
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
-    from analyzer import analyze_site, portfolio_impact, AnalysisError
-    body = request.get_json(silent=True) or {}
-    url, text = (body.get("url") or "").strip(), (body.get("text") or "").strip()
-    if not url and not text:
-        return jsonify({"error": "Send the page link, the policy text, or both."}), 400
-    try:
-        report = analyze_site(url or None, text or None, body.get("name"), include_terms=bool(body.get("include_terms")))
-    except AnalysisError as e:
-        return jsonify({"error": str(e)}), 422
-    except Exception as e:
-        logging.error(f"Summarize failed: {e}")
-        return jsonify({"error": f"Analysis failed: {e}"}), 500
-    report["portfolio_impact"] = portfolio_impact(report, DB_PATH)
-    if body.get("add_to_dashboard"):
-        try:
-            report["shelf_id"] = _shelf_add(report)
-            report["on_dashboard"] = True
-        except Exception as e:
-            logging.error(f"Could not add to dashboard shelf: {e}")
-            report["on_dashboard"] = False
-    return jsonify(report)
-
-
 @app.route('/api/compare-websites', methods=['POST', 'OPTIONS'])
 def compare_websites():
     """
-    Compare 2 to 6 websites and recommend one.
-    Body: {"sites": [ {"url": "...", "text": "(optional pasted policy)", "name": "(optional)"} or {"shelf_id": 3}, ... ]}
-    The older {"a": {...}, "b": {...}} form still works.
-    Each site is read (or loaded from the dashboard shelf), scored, and ranked.
+    Body: {"a": {"url": "...", "text": "(optional pasted policy)", "name": "(optional)"}, "b": {...}}
+    Fetches each site's privacy policy / terms, scores both, and recommends one.
     """
     if request.method == 'OPTIONS':
         return jsonify({}), 200
 
-    from analyzer import analyze_site, compare_many, portfolio_impact, AnalysisError, MAX_COMPARE_SITES
+    from analyzer import analyze_site, compare_reports, portfolio_impact, AnalysisError
 
     body = request.get_json(silent=True) or {}
-    raw_sites = body.get("sites")
-    if raw_sites is None:
-        raw_sites = [body.get("a"), body.get("b")]
-    if not isinstance(raw_sites, list) or len(raw_sites) < 2:
-        return jsonify({"error": "Choose at least two websites to compare."}), 400
-    if len(raw_sites) > MAX_COMPARE_SITES:
-        return jsonify({"error": f"You can compare up to {MAX_COMPARE_SITES} websites at a time."}), 400
-
-    letter = lambda i: chr(ord("a") + i)       # error positions: "a", "b", "c", ...
-    label = lambda i: f"Website {letter(i).upper()}"
-
-    sites = []
-    for i, side in enumerate(raw_sites):
+    sides = {}
+    for key in ("a", "b"):
+        side = body.get(key)
         if isinstance(side, str):
             side = {"url": side}
-        if isinstance(side, dict) and side.get("shelf_id") is not None:
-            sites.append(side)
-            continue
         if not isinstance(side, dict) or not (side.get("url") or side.get("text")):
-            return jsonify({"error": f"{label(i)}: enter a link or paste the policy text.", "side": letter(i)}), 400
-        sites.append(side)
+            return jsonify({"error": f"Website {key.upper()}: enter a link or paste the policy text.", "side": key}), 400
+        sides[key] = side
 
-    shelf_ids = [s_.get("shelf_id") for s_ in sites if s_.get("shelf_id") is not None]
-    if len(shelf_ids) != len(set(shelf_ids)):
-        return jsonify({"error": "Pick each site only once.", "side": letter(len(sites) - 1)}), 400
-
-    reports = []
-    for i, side in enumerate(sites):
-        if side.get("shelf_id") is not None:
-            try:
-                rep = _load_shelf_report(int(side["shelf_id"]))
-            except (TypeError, ValueError):
-                rep = None
-            if rep is None:
-                return jsonify({"error": f"{label(i)}: that analysis is no longer on the dashboard. Add it again from the extension.", "side": letter(i)}), 404
-            reports.append(rep)
-            continue
+    reports = {}
+    for key, side in sides.items():
         try:
-            reports.append(analyze_site(side.get("url"), side.get("text"), side.get("name"),
-                                        include_terms=bool(side.get("include_terms"))))
+            reports[key] = analyze_site(side.get("url"), side.get("text"), side.get("name"))
         except AnalysisError as e:
-            return jsonify({"error": f"{label(i)}: {e}", "side": letter(i)}), 422
+            return jsonify({"error": f"Website {key.upper()}: {e}", "side": key}), 422
         except Exception as e:
-            logging.error(f"Website analysis failed ({letter(i)}): {e}")
-            return jsonify({"error": f"{label(i)}: analysis failed ({e})", "side": letter(i)}), 500
+            logging.error(f"Website analysis failed ({key}): {e}")
+            return jsonify({"error": f"Website {key.upper()}: analysis failed ({e})", "side": key}), 500
 
-    # Make names unique so they can be told apart in the report.
-    seen = {}
-    for r in reports:
-        key = r["service_name"].lower()
-        seen[key] = seen.get(key, 0) + 1
-        if seen[key] > 1:
-            r["service_name"] += f" ({seen[key]})"
-    firsts = [k for k, v in seen.items() if v > 1]
-    for r in reports:
-        if r["service_name"].lower() in firsts and "(" not in r["service_name"]:
-            r["service_name"] += " (1)"
-
-    for r in reports:
+    a, b = reports["a"], reports["b"]
+    if a["service_name"].lower() == b["service_name"].lower():
+        a["service_name"] += " (A)"
+        b["service_name"] += " (B)"
+    for r in (a, b):
         r["portfolio_impact"] = portfolio_impact(r, DB_PATH)
-    verdict = compare_many(reports)
-    out = {"sites": reports, "verdict": verdict}
-    if len(reports) == 2:          # keep the original two-site fields for older callers
-        out["a"], out["b"] = reports
-    return jsonify(out)
+    return jsonify({"a": a, "b": b, "verdict": compare_reports(a, b)})
 
 
 @app.route('/')
@@ -478,7 +303,5 @@ def serve_index():
 
 if __name__ == '__main__':
     print("Starting ClauseGuard Dashboard...")
-    # Port 5000 is taken by AirPlay Receiver on macOS, so ClauseGuard uses 5050 by default.
-    port = int(os.environ.get("PORT", "5050"))
-    print(f"Open http://127.0.0.1:{port} in your browser.")
-    app.run(host='127.0.0.1', port=port, debug=True)
+    print("Open http://127.0.0.1:5000 in your browser.")
+    app.run(host='127.0.0.1', port=5000, debug=True)

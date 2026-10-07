@@ -87,14 +87,6 @@ PRACTICES = [
      r"\b(as long as (necessary|needed|your account)|indefinitely|retain\w*[^.]{0,60}(years|as long as))\b"),
     ("profiling", "risk", "Profiles users or makes automated decisions",
      r"\b(profil(e|ing)|automated decision|personali[sz]ed (ads|advertising)|inferences?)\b"),
-    ("arbitration", "risk", "Forces arbitration or bans class-action lawsuits",
-     r"\b(binding arbitration|mandatory arbitration|class[- ]action (waiver|ban)|waive\w*[^.]{0,60}class action|class action[^.]{0,40}waive)\b"),
-    ("content_license", "risk", "Takes a broad licence to use your content",
-     r"\b(perpetual|irrevocable|worldwide|royalty[- ]free|sublicensable)\b[^.]{0,100}\blicen[cs]e\b[^.]{0,100}\b(content|material|submissions?)\b|\blicen[cs]e\b[^.]{0,80}\b(your content|user content)\b[^.]{0,60}\b(perpetual|irrevocable|worldwide|royalty[- ]free)\b"),
-    ("unilateral_changes", "risk", "Can change the terms without asking you",
-     r"\b(we|may|reserve the right)\b[^.]{0,60}\b(modify|change|update|amend)\b[^.]{0,60}\b(these terms|this policy|the terms|at any time|without (prior )?notice)\b"),
-    ("auto_renew", "risk", "Renews paid plans automatically",
-     r"\b(auto[- ]?renew\w*|automatically renew\w*|recurring (billing|subscription|payment))\b"),
     ("no_sale", "protect", "States that it does not sell personal data",
      r"\b(do(es)? not|don't|never|will not)\s+sell\b[^.]{0,50}\b(personal|data|information)\b"),
     ("delete_right", "protect", "Lets users delete or erase their data",
@@ -276,31 +268,6 @@ def _rank_policy_links(base_url, links):
     return [u for _, u in ranked]
 
 
-_TERMS_WORDS = ("terms", "conditions", "terms of service", "terms of use")
-
-
-def find_terms_text(page_url, links=None):
-    """Best effort: find and read the 'Terms' document linked from a page. Returns (text, source) or (None, None)."""
-    try:
-        if links is None:
-            final_url, html = _http_get(page_url)
-            _, links, _ = html_to_text(html)
-            page_url = final_url
-        cands = [u for u in _rank_policy_links(page_url, links)
-                 if any(w in u.lower().replace("-", " ").replace("_", " ") for w in _TERMS_WORDS)]
-        for cand in cands[:3]:
-            try:
-                f_url, c_html = _http_get(cand)
-            except AnalysisError:
-                continue
-            c_text, _, c_title = html_to_text(c_html)
-            if _looks_like_policy(c_text, f_url):
-                return c_text, {"url": f_url, "title": c_title or "Terms and conditions"}
-    except AnalysisError:
-        pass
-    return None, None
-
-
 def fetch_policy(raw_url):
     """
     Finds and reads the privacy policy for a website link.
@@ -317,11 +284,6 @@ def fetch_policy(raw_url):
     if _looks_like_policy(text, final_url):
         texts.append(text)
         sources.append({"url": final_url, "title": title or "Policy page"})
-        if not re.search(r"terms|conditions", final_url, re.I):
-            t_text, t_src = find_terms_text(final_url, links)
-            if t_text and t_src["url"] != final_url:
-                texts.append(t_text)
-                sources.append(t_src)
     else:
         # The link is probably a home page: follow its privacy and terms links.
         candidates = _rank_policy_links(final_url, links)
@@ -443,77 +405,6 @@ def heuristic_scores(text, canonical_entities):
     return sev, min(5.0, spec)
 
 
-def summarize_report(r):
-    """Plain-language summary of a report (no AI needed, built from what was detected)."""
-    ents = r["entities"]
-    names = [e["name"] for e in ents]
-    present = {p["key"]: p for p in r["practices"] if p["present"]}
-    risks = [p for p in r["practices"] if p["kind"] == "risk" and p["present"]]
-    goods = [p for p in r["practices"] if p["kind"] == "protect" and p["present"]]
-    sensitive = [e["name"] for e in ents if e["weight"] >= 4]
-
-    def join(xs):
-        xs = list(xs)
-        return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
-
-    # What it collects
-    if names:
-        top = names[:6]
-        collects = f"Mentions {len(names)} kinds of data, including {join(top)}."
-        if sensitive:
-            collects += f" Sensitive items: {join(sensitive)}."
-    else:
-        collects = "No specific kinds of data were detected."
-
-    # Who gets it
-    share_keys = [k for k in ("sells_data", "ad_sharing", "third_party") if k in present]
-    if "sells_data" in present:
-        who = "May sell or monetise personal data, and shares it with partners."
-    elif share_keys:
-        who = "Shares data with " + join([{"ad_sharing": "advertisers or ad partners",
-                                          "third_party": "third parties and service providers"}[k]
-                                         for k in share_keys if k != "sells_data"]) + "."
-    elif "no_sale" in present:
-        who = "Says it does not sell personal data. No sharing with advertisers was found."
-    else:
-        who = "No sharing with third parties or advertisers was found in the text."
-    if "cross_border" in present:
-        who += " Data may be moved to other countries."
-
-    # How long
-    if "long_retention" in present:
-        keep = "Keeps data for long or open-ended periods (\"as long as necessary\" or similar)."
-    else:
-        keep = "No long or open-ended retention wording was found, but check the policy for exact periods."
-
-    # Your control
-    ctrl_text = {"delete_right": "delete your data", "access_right": "download or view your data",
-                 "opt_out": "opt out or change privacy settings"}
-    ctrl = [ctrl_text[k] for k in ("delete_right", "access_right", "opt_out") if k in present]
-    control = ("You can " + join(ctrl) + ".") if ctrl else "No clear way to delete, download or opt out of your data was found."
-
-    # Terms and conditions
-    terms_flags = [p["label"] for p in risks if p["key"] in ("arbitration", "content_license", "unilateral_changes", "auto_renew")]
-    terms = ("Terms to watch: " + join([t.lower() for t in terms_flags]) + ".") if terms_flags else \
-        "No unusual terms such as forced arbitration or broad content licences were found."
-
-    band_l = r["band"].lower()
-    tldr = (f"{r['service_name']} scores {r['rating']:.0f}/100 ({band_l} risk). "
-            f"{collects.split('.')[0]}. " + (who.split('.')[0] + ".") )
-    return {
-        "tldr": tldr,
-        "key_points": [
-            {"title": "What it collects", "text": collects},
-            {"title": "Who gets it", "text": who},
-            {"title": "How long they keep it", "text": keep},
-            {"title": "Your control", "text": control},
-            {"title": "Terms and conditions", "text": terms},
-        ],
-        "red_flags": [p["label"] for p in risks] + [f"Collects {n.lower()}" for n in sensitive],
-        "good_signs": [p["label"] for p in goods],
-    }
-
-
 def _clamp(x, lo=0.0, hi=100.0):
     return max(lo, min(hi, x))
 
@@ -593,7 +484,7 @@ def build_report(service_name, text, sources=None, note="", policy_url=""):
     rating = _clamp(base + adjust)
 
     top = sorted(clauses, key=lambda c: -c["score"])[:6]
-    report = {
+    return {
         "service_name": service_name,
         "mode": extracted.get("mode", "UNKNOWN"),
         "policy_url": policy_url or (sources[0]["url"] if sources else ""),
@@ -616,26 +507,16 @@ def build_report(service_name, text, sources=None, note="", policy_url=""):
         "clauses": clauses,
         "canonical_entities": sorted(ent_counts),
     }
-    report["summary"] = summarize_report(report)
-    return report
 
 
-def analyze_site(raw_url=None, pasted_text=None, name=None, include_terms=False):
-    """Analyze either a link or pasted policy text. Returns a report.
-    include_terms: with pasted text and a link, also try to read the site's linked terms and conditions."""
+def analyze_site(raw_url=None, pasted_text=None, name=None):
+    """Analyze either a link or pasted policy text. Returns a report."""
     if pasted_text and pasted_text.strip():
         label = (name or "").strip() or (site_name_from_host(urllib.parse.urlparse(normalize_url(raw_url)).hostname)
                                          if raw_url and raw_url.strip() else "Pasted policy")
         text = pasted_text.strip()[:MAX_TEXT_CHARS]
-        sources = [{"url": raw_url or "", "title": "This page" if include_terms else "Pasted text"}]
-        note = "Analysed from the page text." if include_terms else "Analysed from pasted text."
-        if include_terms and raw_url and raw_url.strip() and not re.search(r"terms|conditions", raw_url, re.I):
-            t_text, t_src = find_terms_text(normalize_url(raw_url))
-            if t_text:
-                text = (text + "\n" + t_text)[:MAX_TEXT_CHARS]
-                sources.append(t_src)
-                note += " Terms and conditions were read too."
-        return build_report(label, text, sources=sources, note=note, policy_url=raw_url or "")
+        return build_report(label, text, sources=[{"url": raw_url or "", "title": "Pasted text"}],
+                            note="Analysed from pasted text.", policy_url=raw_url or "")
     fetched = fetch_policy(raw_url)
     label = (name or "").strip() or fetched["site_name"]
     return build_report(label, fetched["text"], sources=fetched["sources"], note=fetched["note"])
@@ -678,8 +559,8 @@ def compare_reports(a, b):
         reasons.append(f"{worst['service_name']} covers more kinds of data ({len(worst_names)} versus {len(best_names)}).")
 
     if worst["avg_severity"] - best["avg_severity"] >= 0.3:
-        reasons.append(f"{worst['service_name']}'s statements are more severe on average (severity "
-                       f"{worst['avg_severity']:.1f} versus {best['avg_severity']:.1f} for {best['service_name']}).")
+        reasons.append(f"Its statements are more severe on average (severity {worst['avg_severity']:.1f} "
+                       f"versus {best['avg_severity']:.1f}).")
 
     wp = {p["key"] for p in worst["practices"] if p["present"] and p["kind"] == "risk"}
     bp = {p["key"] for p in best["practices"] if p["present"] and p["kind"] == "risk"}
@@ -697,70 +578,6 @@ def compare_reports(a, b):
                f"({best['rating']:.0f} versus {worst['rating']:.0f} on a 0 to 100 risk scale).")
     return {"winner": winner, "confidence": confidence,
             "headline": f"{best['service_name']} is the more private choice",
-            "summary": summary, "reasons": reasons[:7], "difference": round(gap, 1)}
-
-
-MAX_COMPARE_SITES = 6
-TIE_MARGIN = 4   # sites within this many rating points of the best are treated as tied
-
-
-def compare_many(reports):
-    """
-    Ranks 2 to MAX_COMPARE_SITES reports (lowest risk rating first) and recommends one.
-    For exactly two sites this returns the same verdict as compare_reports, plus the ranking fields.
-    Returns the verdict dict with: winner ('a'/'b'/'tie' for two sites, else the site name or 'tie'),
-    winner_indices (positions in `reports`), ranking, confidence, headline, summary, reasons.
-    """
-    n = len(reports)
-    if n < 2:
-        raise ValueError("Need at least two sites to compare.")
-    order = sorted(range(n), key=lambda i: (reports[i]["rating"], reports[i]["service_name"]))
-    best_i = order[0]
-    best = reports[best_i]
-    ranking = [{"rank": pos + 1, "index": i, "service_name": reports[i]["service_name"],
-                "rating": reports[i]["rating"], "band": reports[i]["band"],
-                "gap": round(reports[i]["rating"] - best["rating"], 1)}
-               for pos, i in enumerate(order)]
-    top = [i for i in order if reports[i]["rating"] - best["rating"] < TIE_MARGIN]
-
-    if n == 2:
-        v = compare_reports(reports[0], reports[1])
-        v["winner_indices"] = [0] if v["winner"] == "a" else [1] if v["winner"] == "b" else [0, 1]
-        v["ranking"] = ranking
-        return v
-
-    names = [reports[i]["service_name"] for i in order]
-    ranking_line = "Ranking, most private first: " + ", then ".join(
-        f"{r['service_name']} ({r['rating']:.0f})" for r in ranking) + "."
-
-    if len(top) > 1:
-        tied = [reports[i]["service_name"] for i in top]
-        joined = ", ".join(tied[:-1]) + " and " + tied[-1]
-        reasons = [ranking_line]
-        worst = reports[order[-1]]
-        if worst["rating"] - best["rating"] >= TIE_MARGIN:
-            reasons.append(f"{worst['service_name']} is the least private of the {n} ({worst['rating']:.0f}/100).")
-        return {"winner": "tie", "winner_indices": top, "ranking": ranking, "confidence": "low",
-                "headline": f"{joined} are about equally private",
-                "summary": (f"{joined} score within {TIE_MARGIN} points of each other at the low end. "
-                            "Choose between them on features, price or what you already use."),
-                "reasons": reasons, "difference": 0.0}
-
-    second = reports[order[1]]
-    gap = second["rating"] - best["rating"]
-    confidence = "high" if gap >= 15 else "medium" if gap >= 8 else "low"
-    reasons = [ranking_line]
-    # Why it beats the runner-up (most useful comparison), then the least private one.
-    runner = compare_reports(best, second)
-    reasons += [r for r in runner["reasons"][1:4]]
-    worst = reports[order[-1]]
-    if worst is not second:
-        extra = [r for r in compare_reports(best, worst)["reasons"][1:3] if r not in reasons]
-        reasons += extra
-    summary = (f"Use {best['service_name']} out of these {n}. It has the lowest risk rating "
-               f"({best['rating']:.0f}/100); the next best is {second['service_name']} at {second['rating']:.0f}.")
-    return {"winner": best["service_name"], "winner_indices": [best_i], "ranking": ranking,
-            "confidence": confidence, "headline": f"{best['service_name']} is the most private of the {n}",
             "summary": summary, "reasons": reasons[:7], "difference": round(gap, 1)}
 
 

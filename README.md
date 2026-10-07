@@ -47,9 +47,9 @@ pip install -r requirements.txt
 ## Compare two websites
 
 Start the dashboard, then paste two website links (for example `spotify.com` and `apple.com`).
-ClauseGuard finds each site's privacy policy and terms, scores them, ranks them, and recommends the most private one,
+ClauseGuard finds each site's privacy policy and terms, scores them, and recommends the more private one,
 with reasons, a data-type comparison, detected practices (selling data, deletion rights, etc.) and the riskiest statements.
-If a site blocks automatic access, choose "Paste policy text instead". The API is `POST /api/compare-websites` with `{"sites": [ {...}, {...}, ... ]}` (2 to 6 sites; the older `{"a":..., "b":...}` form also works).
+If a site blocks automatic access, choose "Paste policy text instead". The API is `POST /api/compare-websites`.
 Links to local/private network addresses are refused unless `CLAUSEGUARD_ALLOW_PRIVATE=1` is set (used by the tests).
 
 The portfolio starts empty. Use **Save to portfolio** on a comparison to add services (and **Remove** on the My portfolio tab). The previous sample data (Spotify and a leftover "Policies" entry) is kept in `data/db/portfolio_sample.db`.
@@ -67,7 +67,7 @@ Start the live dashboard:
 ```powershell
 python src/dashboard.py
 ```
-Then open your web browser to: [http://127.0.0.1:5050](http://127.0.0.1:5050)
+Then open your web browser to: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ## Real API Integration (Gemini)
 
@@ -84,22 +84,15 @@ ClauseGuard natively integrates with Google's Gemini API for semantic entity ext
 
 ## Chrome Extension
 
-The extension reads the website you are on, summarizes its privacy policy and terms and conditions in plain words,
-shows the risk rating, and can compare it with any other site. It uses the same engine as the dashboard.
+To use the Chrome Extension:
+1. Ensure the backend is running (`python src/dashboard.py`).
+2. Open Chrome and navigate to `chrome://extensions/`.
+3. Enable **Developer mode** in the top right.
+4. Click **Load unpacked** and select the `D:\clauseguard\extension` directory.
+5. Open a real privacy policy webpage (e.g., Spotify's privacy policy).
+6. Click the ClauseGuard extension icon and click **Analyze Policy**.
 
-1. Start the backend: `python src/dashboard.py` (it runs on **port 5050**).
-2. Open Chrome or Brave and go to `chrome://extensions/` (or `brave://extensions/`).
-3. Turn on **Developer mode**, click **Load unpacked**, and choose the `extension` folder.
-4. Open any website and click the ClauseGuard icon, then **Summarize this site**.
-   - On a normal page, the backend finds the site's privacy policy and terms by itself.
-   - On a policy or terms page, the page text is read directly.
-5. Every site you summarize is added to the dashboard's **Ready to compare** list automatically. Summarize a second site, then open the
-   dashboard (or click **Compare on dashboard** in the popup). The sites you just summarized are already ticked (you can tick up to 6), so you only click **Compare**.
-   No links to copy. You can also type one or more other sites (separated by commas) under **Compare with other sites** in the popup for a quick ranking.
-
-The badge in the popup shows whether the backend is reachable. If it says "Wrong app on this port", something else is using
-that port. On macOS, port 5000 belongs to AirPlay Receiver, which is why ClauseGuard uses 5050.
-You can change the address with the gear icon in the popup (set `PORT=...` when starting the backend to match).
+*(Note: Chrome integration has been verified against proxy payloads, but not manually verified inside an actual physical browser instance.)*
 
 ## Testing
 

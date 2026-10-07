@@ -1,0 +1,413 @@
+{
+  "dataset": {
+    "file": "data/evaluation/ground_truth_40.json",
+    "size": 40,
+    "positive": 20,
+    "negative": 20,
+    "annotation_provenance": "Annotator A = Claude (AI assistant), applying ANNOTATION_GUIDE.md. Labels were fixed BEFORE any prefilter prediction was generated and have not been changed since. This is NOT a human-annotated set and no second annotator exists yet; a human review pass is recommended before citing it as human ground truth."
+  },
+  "validation": {
+    "validator": "passed (schema + leakage)",
+    "stats": {
+      "total": 40,
+      "positive": 20,
+      "negative": 20
+    },
+    "training_fixture_size": 8,
+    "exact_overlap_with_training_fixture": 0,
+    "max_similarity_within_eval_set": 0.614,
+    "max_similarity_vs_training_fixture": 0.446,
+    "max_similarity_vs_14_example_dev_set": 0.507,
+    "max_similarity_vs_annotation_guide_examples": 0.507,
+    "near_duplicate_threshold": 0.85
+  },
+  "y_true": "'label' field of each example in ground_truth_40.json (Annotator A)",
+  "y_pred": "PrivacyPrefilter (TF-IDF + LogisticRegression(random_state=42)) trained via train_with_minimal_fixture(); predicted per clause with filter_candidates([text])",
+  "primary_metrics": {
+    "TP": 17,
+    "TN": 12,
+    "FP": 8,
+    "FN": 3,
+    "Precision": 0.68,
+    "Recall": 0.85,
+    "F1": 0.7555555555555556
+  },
+  "confusion_matrix": {
+    "layout": "[[TP, FN], [FP, TN]]; rows = actual (1,0), columns = predicted (1,0)",
+    "matrix": [
+      [
+        17,
+        3
+      ],
+      [
+        8,
+        12
+      ]
+    ]
+  },
+  "cohen_kappa_reference_vs_prediction": {
+    "kappa": 0.44999999999999996,
+    "interpretation": "moderate",
+    "meaning": "Agreement between the reference labels and the prefilter's predictions. NOT inter-annotator agreement."
+  },
+  "cohen_kappa_inter_annotator": {
+    "status": "NOT COMPUTED",
+    "reason": "No second human annotation exists yet (data/evaluation/annotator_b_labels.json not found). Fill data/evaluation/annotator_b_template.json independently and save it under that name."
+  },
+  "secondary_analyzer_candidate_rule": {
+    "description": "prefilter OR analyzer.PRIVACY_WORDS regex (rule used in analyzer.extract_clauses)",
+    "metrics": {
+      "TP": 19,
+      "TN": 11,
+      "FP": 9,
+      "FN": 1,
+      "Precision": 0.6785714285714286,
+      "Recall": 0.95,
+      "F1": 0.7916666666666667
+    },
+    "cohen_kappa_reference_vs_prediction": 0.5
+  },
+  "misclassified_by_primary": [
+    {
+      "id": "eval40_008",
+      "text": "This Privacy Policy was last updated on 14 March 2024.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "policy_meta",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_010",
+      "text": "Our music service offers over fifty million songs and thousands of curated playlists.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "generic_service_description",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_015",
+      "text": "Details of your device model, operating system version and language settings are sent to our servers each time the app launches.",
+      "actual": 1,
+      "predicted": 0,
+      "error_type": "FN",
+      "category": "device_data_passive",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_016",
+      "text": "The service is provided \"as is\" without warranties of any kind, express or implied.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "warranty_disclaimer",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_018",
+      "text": "You are responsible for keeping your password confidential and for all activity under your account.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "user_obligation",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_020",
+      "text": "Our company is headquartered in Dublin, Ireland, and has offices in several European countries.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "company_information",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_022",
+      "text": "We may update this policy from time to time, and the revised version takes effect when it is posted.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "policy_meta",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_023",
+      "text": "Information about how you use the app, such as the features you tap and the time spent on each screen, is recorded.",
+      "actual": 1,
+      "predicted": 0,
+      "error_type": "FN",
+      "category": "usage_tracking",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_024",
+      "text": "Premium members can download tracks and listen to them offline.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "service_feature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "eval40_028",
+      "text": "Payment for subscriptions is due at the start of each billing period and is non-refundable.",
+      "actual": 0,
+      "predicted": 1,
+      "error_type": "FP",
+      "category": "commercial_terms",
+      "difficulty": "moderate"
+    },
+    {
+      "id": "eval40_029",
+      "text": "If our company is acquired, the personal data we hold about you may be transferred to the new owner.",
+      "actual": 1,
+      "predicted": 0,
+      "error_type": "FN",
+      "category": "transfer_business",
+      "difficulty": "moderate"
+    }
+  ],
+  "per_clause_predictions": [
+    {
+      "id": "eval40_001",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_002",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_003",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_004",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_005",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_006",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_007",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_008",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_009",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_010",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_011",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_012",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_013",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_014",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_015",
+      "label": 1,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_016",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_017",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_018",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_019",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_020",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_021",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_022",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_023",
+      "label": 1,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_024",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_025",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_026",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_027",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_028",
+      "label": 0,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_029",
+      "label": 1,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_030",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_031",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_032",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_033",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_034",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_035",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_036",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_037",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_038",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    },
+    {
+      "id": "eval40_039",
+      "label": 1,
+      "prefilter_pred": 1,
+      "analyzer_rule_pred": 1
+    },
+    {
+      "id": "eval40_040",
+      "label": 0,
+      "prefilter_pred": 0,
+      "analyzer_rule_pred": 0
+    }
+  ]
+}

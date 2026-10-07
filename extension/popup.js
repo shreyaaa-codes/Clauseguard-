@@ -1,310 +1,241 @@
-"use strict";
-const DEFAULT_SERVER = "http://127.0.0.1:5050";
-const $ = (id) => document.getElementById(id);
+document.addEventListener('DOMContentLoaded', () => {
+    let currentAnalysisResult = null;
+    const siteNameSpan = document.getElementById('site-name');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const statusDiv = document.getElementById('status');
+    const resultsDiv = document.getElementById('results');
+    const toggleClausesBtn = document.getElementById('toggle-clauses-btn');
+    const clausesDetailsDiv = document.getElementById('clauses-details');
 
-let server = DEFAULT_SERVER;
-let tab = null;
-let lastPayload = null;   // what we sent for analysis (reused for comparison)
-let lastReport = null;
-
-/* Small DOM helper: page text is untrusted, so nothing is inserted with innerHTML. */
-function h(tag, attrs, ...kids) {
-  const el = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs || {})) {
-    if (v == null || v === false) continue;
-    if (k === "class") el.className = v; else if (k === "text") el.textContent = v; else el.setAttribute(k, v);
-  }
-  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
-  return el;
-}
-
-/* ---------- storage ---------- */
-const store = {
-  get: (key) => new Promise((res) => chrome.storage.local.get(key, (o) => res(o[key]))),
-  set: (key, value) => new Promise((res) => chrome.storage.local.set({ [key]: value }, res)),
-};
-
-/* ---------- status helpers ---------- */
-function showStatus(el, msg, type = "info", fix = "") {
-  el.replaceChildren(msg, fix ? h("span", { class: "fix", text: fix }) : "");
-  el.className = "status " + type;
-}
-function hide(el) { el.classList.add("hidden"); }
-function show(el) { el.classList.remove("hidden"); }
-
-/* ---------- talking to the backend ---------- */
-class BackendError extends Error {
-  constructor(message, fix) { super(message); this.fix = fix || ""; }
-}
-
-async function api(path, options = {}, timeoutMs = 90000) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  let res;
-  try {
-    res = await fetch(server + path, { ...options, signal: ctrl.signal,
-      headers: { "Content-Type": "application/json" } });
-  } catch (e) {
-    if (e.name === "AbortError") throw new BackendError("The backend took too long to answer.", "Long policies can take up to a minute. Try again.");
-    throw new BackendError("Cannot reach the ClauseGuard backend.", "Start it with: python src/dashboard.py   (then open this popup again)");
-  } finally {
-    clearTimeout(timer);
-  }
-  let body = null;
-  try { body = await res.json(); } catch (e) { /* not JSON */ }
-  if (!res.ok) {
-    if (body && body.error) throw new BackendError(body.error);
-    if (res.status === 403 || res.status === 404 || !body) {
-      throw new BackendError(`Something on ${new URL(server).host} answered with HTTP ${res.status}, but it is not ClauseGuard.`,
-        "On a Mac, port 5000 is used by AirPlay Receiver. Use port 5050: restart the backend and set the address in settings (the gear icon).");
-    }
-    throw new BackendError(`The backend returned HTTP ${res.status}.`);
-  }
-  return body;
-}
-
-async function checkConnection() {
-  const el = $("conn");
-  try {
-    const r = await fetch(server + "/api/health", { signal: AbortSignal.timeout(2500) });
-    const body = await r.json().catch(() => null);
-    if (r.ok && body && body.app === "ClauseGuard") {
-      el.textContent = "Connected"; el.className = "conn ok"; return true;
-    }
-    el.textContent = "Wrong app on this port"; el.className = "conn bad";
-    showStatus($("status"), `Something other than ClauseGuard is answering on ${new URL(server).host}.`, "error",
-      "On a Mac, port 5000 is used by AirPlay Receiver. Start ClauseGuard on port 5050 and set the address in settings.");
-  } catch (e) {
-    el.textContent = "Backend not running"; el.className = "conn bad";
-    showStatus($("status"), "The ClauseGuard backend is not running.", "error",
-      "Start it with: python src/dashboard.py   Then reopen this popup.");
-  }
-  return false;
-}
-
-/* ---------- settings ---------- */
-$("settings-btn").onclick = () => $("settings").classList.toggle("hidden");
-$("server-save").onclick = async () => {
-  let v = $("server").value.trim().replace(/\/+$/, "");
-  if (!/^https?:\/\//.test(v)) v = "http://" + v;
-  try {
-    const u = new URL(v);
-    if (!["127.0.0.1", "localhost"].includes(u.hostname)) throw new Error();
-    server = u.origin;
-  } catch (e) {
-    showStatus($("status"), "Use a local address such as http://127.0.0.1:5050.", "error"); show($("status")); return;
-  }
-  await store.set("server", server);
-  $("server").value = server;
-  hide($("status"));
-  checkConnection();
-};
-
-/* ---------- page info ---------- */
-const PRIVACY_RE = /privacy|data[- ]policy|data[- ]protection/i;
-const TERMS_RE = /terms|conditions|legal|tos\b/i;
-function pageKind(t) {
-  const probe = `${t.url || ""} ${t.title || ""}`;
-  if (PRIVACY_RE.test(probe)) return "privacy policy page";
-  if (TERMS_RE.test(probe)) return "terms page";
-  return "";
-}
-
-/* ---------- analyze ---------- */
-function getTab() {
-  return new Promise((res) => chrome.tabs.query({ active: true, currentWindow: true }, (t) => res(t[0])));
-}
-function injectAndExtract(tabId) {
-  return new Promise((resolve, reject) => {
-    chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] }, () => {
-      if (chrome.runtime.lastError) return reject(new Error(chrome.runtime.lastError.message));
-      chrome.tabs.sendMessage(tabId, { action: "extract_text" }, (response) => {
-        if (chrome.runtime.lastError || !response) return reject(new Error("Could not read this page. Refresh it and try again."));
-        resolve(response);
-      });
+    // Get current tab info
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        if (activeTab && activeTab.url) {
+            try {
+                const url = new URL(activeTab.url);
+                siteNameSpan.textContent = url.hostname;
+            } catch (e) {
+                siteNameSpan.textContent = "Unknown";
+            }
+        }
     });
-  });
-}
 
-$("analyze-btn").onclick = async () => {
-  const btn = $("analyze-btn");
-  btn.disabled = true; hide($("results")); hide($("verdict"));
-  try {
-    if (!tab || !tab.url || !/^https?:/.test(tab.url)) throw new BackendError("Open a website first, then click ClauseGuard.");
-    if (!(await checkConnection())) return;
-
-    showStatus($("status"), "Reading the page…", "info"); show($("status"));
-    let payload;
-    const looksLikePolicy = pageKind(tab);
-    if (looksLikePolicy) {
-      const page = await injectAndExtract(tab.id);
-      if (!page.text || page.text.length < 200) throw new BackendError("This page has too little text to analyse.");
-      payload = { url: tab.url, text: page.text, title: page.title, include_terms: true, add_to_dashboard: true };
-    } else {
-      // A normal page: let the backend find this site's privacy policy and terms itself.
-      payload = { url: tab.url, add_to_dashboard: true };
+    function showStatus(msg, type = "info") {
+        statusDiv.textContent = msg;
+        statusDiv.className = `status ${type}`;
+        statusDiv.classList.remove('hidden');
     }
 
-    showStatus($("status"), looksLikePolicy
-      ? "Summarizing the policy and its terms and conditions…"
-      : "Finding this site's privacy policy and terms, then summarizing them…", "info");
-    let report;
-    try {
-      report = await api("/api/summarize", { method: "POST", body: JSON.stringify(payload) });
-    } catch (e) {
-      if (!looksLikePolicy && e instanceof BackendError && !e.fix) {
-        // The backend could not fetch the site (blocked or needs JavaScript): use this page's own text instead.
-        const page = await injectAndExtract(tab.id);
-        if (page.text && page.text.length >= 200) {
-          payload = { url: tab.url, text: page.text, title: page.title, include_terms: true, add_to_dashboard: true };
-          report = await api("/api/summarize", { method: "POST", body: JSON.stringify(payload) });
-        } else throw e;
-      } else throw e;
+    function hideStatus() {
+        statusDiv.classList.add('hidden');
     }
-    lastPayload = payload;
-    await store.set("cache:" + new URL(tab.url).origin, { report, payload, at: Date.now() });
-    hide($("status"));
-    render(report, null);
-    if (report.on_dashboard) {
-      showStatus($("dash-note"), `${report.service_name} is on your dashboard. Summarize another site, then open the dashboard and click Compare.`, "success"); show($("dash-note"));
+
+    analyzeBtn.addEventListener('click', () => {
+        analyzeBtn.disabled = true;
+        resultsDiv.classList.add('hidden');
+        showStatus("Extracting page text...", "info");
+
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const activeTab = tabs[0];
+
+            if (activeTab.url.startsWith('chrome://')) {
+                showStatus("Cannot analyze chrome:// pages.", "error");
+                analyzeBtn.disabled = false;
+                return;
+            }
+
+            // Inject content script and ask for text
+            chrome.scripting.executeScript({
+                target: { tabId: activeTab.id },
+                files: ['content.js']
+            }, () => {
+                if (chrome.runtime.lastError) {
+                    showStatus("Failed to inject script: " + chrome.runtime.lastError.message, "error");
+                    analyzeBtn.disabled = false;
+                    return;
+                }
+
+                chrome.tabs.sendMessage(activeTab.id, { action: "extract_text" }, (response) => {
+                    if (chrome.runtime.lastError || !response) {
+                        showStatus("ClauseGuard couldn't analyze this page. Please refresh and try again.", "error");
+                        analyzeBtn.disabled = false;
+                        return;
+                    }
+
+                    if (!response.text || response.text.trim().length === 0) {
+                        showStatus("No readable text found on this page.", "error");
+                        analyzeBtn.disabled = false;
+                        return;
+                    }
+
+                    if (!response.isLikelyPrivacyPolicy) {
+                        if (!confirm("This page does not appear to be a privacy policy. Do you want to scan it anyway?")) {
+                            hideStatus();
+                            analyzeBtn.disabled = false;
+                            return;
+                        }
+                    }
+
+                    if (response.truncated) {
+                        showStatus("Text is very large. Sending first 50k characters to backend...", "warning");
+                    } else {
+                        showStatus("Sending to ClauseGuard backend...", "info");
+                    }
+
+                    sendToBackend(response);
+                });
+            });
+        });
+    });
+
+    async function sendToBackend(data) {
+        try {
+            const res = await fetch("http://127.0.0.1:5000/api/analyze-policy", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    text: data.text,
+                    url: data.url,
+                    title: data.title
+                })
+            });
+
+            if (!res.ok) {
+                let errText = "Backend error.";
+                try {
+                    const errObj = await res.json();
+                    errText = errObj.error || errText;
+                } catch(e) {}
+                throw new Error(errText);
+            }
+
+            const result = await res.json();
+            displayResults(result);
+
+        } catch (error) {
+            if (error.message.includes("Failed to fetch")) {
+                showStatus("Start ClauseGuard backend first: python src/dashboard.py", "error");
+            } else {
+                showStatus(`Analysis failed: ${error.message}`, "error");
+            }
+            analyzeBtn.disabled = false;
+        }
     }
-  } catch (e) {
-    showStatus($("status"), e.message, "error", e.fix || "");
-    show($("status"));
-  } finally {
-    btn.disabled = false;
-  }
-};
 
-/* ---------- render ---------- */
-const fmt = (n, d = 0) => Number(n).toFixed(d);
+    function displayResults(data) {
+        hideStatus();
+        analyzeBtn.disabled = false;
+        resultsDiv.classList.remove('hidden');
 
-function render(r, cachedAt) {
-  lastReport = r;
-  show($("results"));
-  $("rating").textContent = fmt(r.rating);
-  const band = $("band"); band.textContent = r.band; band.className = "band " + r.band.split(" ")[0];
-  $("gauge-fill").style.width = r.rating + "%";
-  $("tldr").textContent = r.summary.tldr;
-  const modeText = r.mode && r.mode.startsWith("MOCK")
-    ? "Demo mode: scored with built-in rules. Add a Gemini key on the backend for AI extraction."
-    : "Extracted with " + r.mode + ".";
-  const srcs = (r.sources || []).filter((s) => s.url).map((s) => s.title).join(" + ");
-  $("mode").textContent = [srcs && "Read: " + srcs + ".", cachedAt && "Saved result from " + new Date(cachedAt).toLocaleString() + ".", modeText].filter(Boolean).join(" ");
+        document.getElementById('risk-score').textContent = data.risk.toFixed(1);
+        document.getElementById('api-mode').textContent = data.mode;
 
-  $("flags").replaceChildren(
-    ...r.summary.red_flags.slice(0, 6).map((f) => h("span", { class: "chip bad", text: f })),
-    ...r.summary.good_signs.slice(0, 4).map((f) => h("span", { class: "chip good", text: f })));
+        // Mode styling
+        const modeEl = document.getElementById('mode-indicator');
+        if (data.mode === "MOCK/DEV") {
+            modeEl.style.backgroundColor = "#fef08a"; // yellow
+            modeEl.style.color = "#854d0e";
+        } else {
+            modeEl.style.backgroundColor = "#bbf7d0"; // green
+            modeEl.style.color = "#166534";
+        }
 
-  $("points").replaceChildren(...r.summary.key_points.map((k) =>
-    h("div", { class: "kp" }, h("h3", { text: k.title }), h("p", { text: k.text }))));
+        const entitiesList = document.getElementById('entities-list');
+        entitiesList.innerHTML = '';
+        if (data.canonical_entities.length === 0) {
+            entitiesList.innerHTML = '<li>None detected</li>';
+        } else {
+            data.canonical_entities.forEach(ent => {
+                const li = document.createElement('li');
+                li.textContent = ent;
+                entitiesList.appendChild(li);
+            });
+        }
 
-  $("entities").replaceChildren(...(r.entities.length
-    ? r.entities.map((e) => h("span", { class: "chip" + (e.weight >= 4 ? " bad" : ""), text: e.name }))
-    : [h("span", { class: "hint", text: "None detected." })]));
+        document.getElementById('clause-count').textContent = data.clauses.length;
 
-  $("clauses").replaceChildren(...r.top_clauses.map((c) => h("div", { class: "clause" },
-    h("div", { text: c.text.length > 220 ? c.text.slice(0, 218) + "…" : c.text }),
-    h("div", { class: "meta", text: `Score ${fmt(c.score)} of 10 · ${c.canonical_entities.join(", ") || "General"}` }))));
+        clausesDetailsDiv.innerHTML = '';
+        data.clauses.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'clause-card';
 
-  $("analyze-btn").textContent = "Analyze again";
-  hide($("save-status")); hide($("dash-note"));
-  $("save-btn").disabled = false; $("save-btn").textContent = "Save to portfolio";
-}
+            // Limit text length in UI
+            let text = c.text;
+            if (text.length > 150) {
+                text = text.substring(0, 150) + '...';
+            }
 
-/* ---------- compare ---------- */
-$("compare-btn").onclick = async () => {
-  // One or more other sites, separated by commas, spaces or new lines.
-  const others = $("other").value.split(/[\s,;]+/).map((x) => x.trim()).filter(Boolean);
-  const st = $("compare-status"), btn = $("compare-btn");
-  hide($("verdict"));
-  if (!others.length) { showStatus(st, "Enter at least one website to compare with.", "error"); show(st); return; }
-  if (others.length > 5) { showStatus(st, "You can compare up to 6 websites in total (this one plus 5 others).", "error"); show(st); return; }
-  if (!lastReport) return;
-  btn.disabled = true;
-  showStatus(st, others.length > 1 ? `Reading ${others.length} other policies…` : "Reading the other site's policy…", "info"); show(st);
-  try {
-    const first = lastPayload || { url: tab.url };
-    const data = await api("/api/compare-websites", { method: "POST",
-      body: JSON.stringify({ sites: [first, ...others.map((url) => ({ url }))] }) }, 240000);
-    hide(st);
-    renderVerdict(data);
-  } catch (e) {
-    showStatus(st, e.message, "error", e.fix || ""); show(st);
-  } finally { btn.disabled = false; }
-};
-$("other").addEventListener("keydown", (e) => { if (e.key === "Enter") $("compare-btn").click(); });
+            const risk = ((c.severity_score || 0) + (c.specificity_score || 0)).toFixed(1);
 
-function renderVerdict(d) {
-  const v = d.verdict, box = $("verdict");
-  const sites = d.sites || [d.a, d.b];
-  const conf = { high: "High confidence", medium: "Medium confidence", low: "Low confidence" }[v.confidence];
-  const top = new Set(v.winner_indices || []);
-  box.replaceChildren(
-    h("span", { class: "tag", text: v.winner === "tie" ? "Too close to call" : "Recommended · " + conf }),
-    h("h3", { text: v.headline }),
-    h("p", { text: v.summary }),
-    h("div", { class: "ranking" }, (v.ranking || sites.map((r, i) => ({ index: i, rank: i + 1, service_name: r.service_name, rating: r.rating })))
-      .map((r) => h("div", { class: "rk" + (top.has(r.index) ? " top" : "") },
-        h("span", { class: "n", text: r.rank }), h("span", { class: "nm", text: r.service_name }),
-        h("span", { class: "track" }, h("i", { style: `width:${r.rating}%` })),
-        h("b", { text: fmt(r.rating) })))),
-    v.reasons.length ? h("ul", {}, v.reasons.slice(0, 4).map((r) => h("li", { text: r }))) : null);
-  show(box);
-}
+            card.innerHTML = `
+                <div class="clause-text">"${text}"</div>
+                <div class="clause-meta">
+                    <span>Cat: ${c.risk_category || 'N/A'}</span>
+                    <span>Risk: ${risk}</span>
+                </div>
+            `;
+            clausesDetailsDiv.appendChild(card);
+        });
 
-/* ---------- actions ---------- */
-$("open-dash").onclick = async () => {
-  if (!lastReport) return;
-  const btn = $("open-dash"), st = $("save-status");
-  btn.disabled = true;
-  try {
-    // Make sure this site is on the dashboard shelf (adding twice just replaces it), then open the dashboard.
-    // The dashboard selects the two newest sites by itself, so one click there compares them.
-    await api("/api/shelf", { method: "POST", body: JSON.stringify(lastReport) });
-    chrome.tabs.create({ url: `${server}/` });
-  } catch (e) {
-    showStatus(st, e.message, "error", e.fix || ""); show(st);
-  } finally { btn.disabled = false; }
-};
-
-$("save-btn").onclick = async () => {
-  if (!lastReport) return;
-  const btn = $("save-btn"), st = $("save-status");
-  btn.disabled = true; btn.textContent = "Saving…"; hide(st);
-  try {
-    await api("/api/save-service", { method: "POST", body: JSON.stringify({
-      service_name: lastReport.service_name, category: "Unknown", clauses: lastReport.clauses }) });
-    btn.textContent = "Saved";
-    showStatus(st, `${lastReport.service_name} was added to your portfolio.`, "success"); show(st);
-  } catch (e) {
-    btn.disabled = false; btn.textContent = "Try saving again";
-    showStatus(st, e.message, "error", e.fix || ""); show(st);
-  }
-};
-
-/* ---------- start ---------- */
-(async function init() {
-  server = (await store.get("server")) || DEFAULT_SERVER;
-  $("server").value = server;
-  tab = await getTab();
-  if (tab && tab.url && /^https?:/.test(tab.url)) {
-    const u = new URL(tab.url);
-    $("site-name").textContent = u.hostname.replace(/^www\./, "");
-    $("site-kind").textContent = pageKind(tab);
-    $("analyze-hint").textContent = pageKind(tab)
-      ? "Reads this page, and its terms and conditions if they are linked."
-      : "Finds this site's privacy policy and terms, then summarizes them.";
-  } else {
-    $("site-name").textContent = "Open a website first";
-    $("analyze-btn").disabled = true;
-  }
-  const ok = await checkConnection();
-  if (ok && tab && /^https?:/.test(tab.url)) {
-    const cached = await store.get("cache:" + new URL(tab.url).origin);
-    if (cached && Date.now() - cached.at < 24 * 3600 * 1000) {
-      lastPayload = cached.payload;
-      render(cached.report, cached.at);
+        currentAnalysisResult = data;
+        const saveBtn = document.getElementById('save-btn');
+        const saveStatus = document.getElementById('save-status');
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Add to Portfolio";
+        saveStatus.classList.add('hidden');
     }
-  }
-})();
+
+    toggleClausesBtn.addEventListener('click', () => {
+        if (clausesDetailsDiv.classList.contains('hidden')) {
+            clausesDetailsDiv.classList.remove('hidden');
+            toggleClausesBtn.textContent = "Hide Details";
+        } else {
+            clausesDetailsDiv.classList.add('hidden');
+            toggleClausesBtn.textContent = "View Details";
+        }
+    });
+
+    const saveBtn = document.getElementById('save-btn');
+    const saveStatus = document.getElementById('save-status');
+
+    saveBtn.addEventListener('click', async () => {
+        if (!currentAnalysisResult) return;
+
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving...";
+        saveStatus.classList.add('hidden');
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/api/save-service", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(currentAnalysisResult)
+            });
+
+            if (!res.ok) {
+                let errText = "Failed to save.";
+                try {
+                    const errObj = await res.json();
+                    errText = errObj.error || errText;
+                } catch(e) {}
+                throw new Error(errText);
+            }
+
+            saveBtn.textContent = "Added to Portfolio";
+            saveStatus.textContent = "Successfully saved!";
+            saveStatus.className = "status success";
+            saveStatus.classList.remove('hidden');
+
+        } catch (error) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Retry Add";
+            saveStatus.textContent = `Error: ${error.message}`;
+            saveStatus.className = "status error";
+            saveStatus.classList.remove('hidden');
+        }
+    });
+});
